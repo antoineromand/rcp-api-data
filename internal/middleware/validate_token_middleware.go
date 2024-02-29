@@ -1,11 +1,19 @@
 package middleware
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"strings"
 )
+
+type TokenFromCookie struct {
+    UUID string
+}
+type CtxTokenKey string
+
+const tokenKey CtxTokenKey = "token"
 
 func ValidateTokenMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -39,14 +47,14 @@ func ValidateTokenMiddleware(next http.Handler) http.Handler {
                 return
             }
 
-            var decodedPayload map[string]interface{}
-            json.Unmarshal(payload, &decodedPayload)
+            var token TokenFromCookie
+            json.Unmarshal(payload, &token)
 
             // Ajouter les informations décodées à la requête, si nécessaire
-            // r = r.WithContext(context.WithValue(r.Context(), "decodedPayload", decodedPayload))
+            newRequest := r.WithContext(context.WithValue(r.Context(), tokenKey, token))
 
             // Passez à la prochaine manipulation dans la chaîne
-            next.ServeHTTP(w, r)
+            next.ServeHTTP(w, newRequest)
         } else {
             http.Error(w, "Accès non autorisé", http.StatusUnauthorized)
         }
