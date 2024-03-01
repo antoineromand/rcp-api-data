@@ -3,7 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
-	"rcp-api-data/internal/middleware"
+	"rcp-api-data/internal/util"
 )
 
 func DataController() http.HandlerFunc {
@@ -11,8 +11,12 @@ func DataController() http.HandlerFunc {
 
         switch r.Method {
 		case "GET":
-			fmt.Print(r.Context().Value(middleware.TokenKey))
-		  	fmt.Fprintf(w, "Hello, World!")
+			token, err := util.GetContextToken(r)
+			if err != nil {
+				http.Error(w, "Token introuvable", http.StatusUnauthorized)
+				return
+			}
+			fmt.Println(token)
 		}
     }
 }
