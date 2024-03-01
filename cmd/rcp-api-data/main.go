@@ -3,23 +3,20 @@ package main
 import (
 	"fmt"
 	"net/http"
-	Config "rcp-api-data/internal/config"
 
-	"github.com/caarlos0/env/v10"
-	"github.com/joho/godotenv"
+	"rcp-api-data/internal/config"
+	"rcp-api-data/internal/router"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
-	loadEnv := godotenv.Load()
-	if loadEnv != nil {
-		fmt.Print(loadEnv)
+	
+	fmt.Println("Starting server...")
+	cfg := config.GetConfig()
+	if cfg == nil {
+		fmt.Println("Erreur lors de la récupération de la configuration")
+		return
 	}
-	cfg := Config.Environment{}
-	if err := env.Parse(&cfg); err != nil {
-		fmt.Printf("%+v\n", err)
-	}
-	fmt.Println("Port:", cfg.Port)
+	router.Router()
 	err := http.ListenAndServe(":" + cfg.Port, nil)
 	if err != nil {
 		fmt.Println(err)
