@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"rcp-api-data/internal/middleware"
 )
 
 func DataController() http.HandlerFunc {
@@ -10,9 +11,8 @@ func DataController() http.HandlerFunc {
 
         switch r.Method {
 		case "GET":
-			fmt.Fprintf(w, "Hello, World!")
-		case "POST":
-			fmt.Fprintf(w, "Hello, World!")
+			fmt.Print(r.Context().Value(middleware.TokenKey))
+		  	fmt.Fprintf(w, "Hello, World!")
 		}
     }
 }

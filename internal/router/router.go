@@ -3,8 +3,9 @@ package router
 import (
 	"net/http"
 	"rcp-api-data/internal/controller"
+	"rcp-api-data/internal/middleware"
 )
 
 func Router() {
-	http.HandleFunc("/data", controller.DataController())
+    http.Handle("/data", middleware.ValidateTokenMiddleware(http.HandlerFunc(controller.DataController())))
 }
