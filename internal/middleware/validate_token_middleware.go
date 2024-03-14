@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"rcp-api-data/internal/config"
+	"strings"
 )
 
 type CtxTokenKey string
@@ -18,25 +20,35 @@ func ValidateTokenMiddleware(next http.Handler) http.Handler {
             http.Error(w, "Erreur lors de la requête à l'API d'authentification 1", http.StatusInternalServerError)
             return 
         }
-        resp, err := http.Get(cfg.GetAuthURL() + "/token-check")
+        fmt.Println("ValidateTokenMiddleware")
+        authHeader := r.Header.Get("Authorization")
+        if (!strings.HasPrefix(authHeader, "Bearer ") || len(strings.Split(authHeader, " ")) != 2){
+            http.Error(w, "Invalid 'Authorization' header", http.StatusUnauthorized)
+        }
+        // Envoi de la requête GET à l'API d'authentification avec un header Authorization
+        req, err := http.NewRequest("GET", cfg.GetAuthURL() + "/token-check", nil)
         if err != nil {
-            http.Error(w, "Erreur lors de la requête à l'API d'authentification 2", http.StatusInternalServerError)
+            http.Error(w, "Erreur lors de la requête à l'API d'authentification (step 2)", http.StatusInternalServerError)
+            return
+        }
+        req.Header.Set("Authorization", authHeader)
+        resp, err := http.DefaultClient.Do(req)
+        if err != nil {
+            http.Error(w, "Erreur lors de la requête à l'API d'authentification (step 3)", http.StatusInternalServerError)
             return
         }
         defer resp.Body.Close()
         // Vérifiez si le statut de la réponse est 200
         if resp.StatusCode == http.StatusOK {
-            // Extraire le token JWT du cookie
-            //cookie, err := r.Cookie("token")
-            //fmt.Print(cookie.Value)
-            cookie := "eyJ1dWlkIjoiYTU0MjUxZGMtODdhNi00YTkzLWFlYTYtNzU5YTIwYzBhZDZkIiwiZXhwIjoiMjAyNC0wMy0wMlQwOToxOToyNy4yNzVaIiwiaXNzdWVyIjoiYXV0aGVudGljYXRpb24tMS42LjEiLCJhdWRpZW5jZSI6ImFuZGVzaXRlIn0=.eyJ1dWlkIjoiOTA1ZTkwNWQtNDZkMy00NjE3LWFkNzctYzJiODNhNDMzODRhIiwidXNlcm5hbWUiOiJhbmRlc2l0ZSIsInJvbGVQZXJtaXNzaW9uIjp7ImFkbWluIjpbImFkbWluIl19fQ==.jk/hiegvenlvIFitfCyX+6C1TIFDOD0MczNq1vT+bneSHmdk6Yj33j3xeAC1a3LMO8z4E4mAp9E+m6mu9KzRDg=="
-            if err != nil {
-                http.Error(w, "Token JWT introuvable dans le cookie", http.StatusUnauthorized)
+            
+            // Extraire le bearer token du header authorize
+            rawToken := strings.Split(authHeader, " ")[1]
+            if rawToken == "" {
+                http.Error(w, "Token non valide", http.StatusUnauthorized)
                 return
             }
-
             // Décoder le token JWT
-            token, err := config.DecodePayload(cookie)
+            token, err := config.DecodePayload(rawToken)
 
             if err != nil {
                 http.Error(w, "Erreur lors du décodage du token JWT", http.StatusUnauthorized)

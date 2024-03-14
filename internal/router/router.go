@@ -7,5 +7,5 @@ import (
 )
 
 func Router() {
-    http.Handle("/data", middleware.ValidateTokenMiddleware(http.HandlerFunc(controller.DataController())))
+    http.Handle("/api/data", middleware.ValidateTokenMiddleware(http.HandlerFunc(controller.DataController())))
 }
