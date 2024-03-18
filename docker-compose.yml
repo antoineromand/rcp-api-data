@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  data-database:
+      container_name: data-database
+      image: postgres:alpine
+      restart: unless-stopped
+      healthcheck:
+        test: pg_isready -U ${DB_SERVER_USER} -d ${DB_SERVER_DATABASE} -p ${DB_SERVER_PORT}
+        interval: 5s
+        retries: 5
+        timeout: 5s
+      environment:
+        POSTGRES_DB: "${DB_SERVER_DATABASE}"
+        POSTGRES_USER: "${DB_SERVER_USER}"
+        POSTGRES_PASSWORD: "${DB_SERVER_PASSWORD}"
+      command: -p ${DB_SERVER_PORT}
+      volumes:
+        - data-database-data:/var/lib/postgresql/data
+      networks:
+        - data-database-network
+      expose:
+        - "${DB_SERVER_PORT}"
+      ports:
+        - "${DB_SERVER_PORT}:${DB_SERVER_PORT}"
+networks:
+  data-database-network:
+    driver: bridge
+volumes:
+  data-database-data:
