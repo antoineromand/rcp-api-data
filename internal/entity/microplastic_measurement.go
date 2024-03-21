@@ -11,11 +11,11 @@ type MicroplasticMeasurement struct {
 	CreatedAt time.Time 
 }
 
-func NewMicroplasticMeasurement(bac uint, weight float64) *MicroplasticMeasurement {
+func NewMicroplasticMeasurement(bac uint, weight float64, created_at time.Time) *MicroplasticMeasurement {
 	return &MicroplasticMeasurement{
 		BacID: bac,
 		Weight: weight,
-		CreatedAt: time.Now(),
+		CreatedAt: created_at,
 	}
 }
 

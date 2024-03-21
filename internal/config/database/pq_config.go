@@ -9,8 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
-
 func InitPostgresDB() *gorm.DB {
 	env := config.GetConfig()
 	if env == nil {
@@ -34,10 +32,5 @@ func InitPostgresDB() *gorm.DB {
 	if err := sqlDB.Ping(); err != nil {
 		panic(err)
 	}
-	return db
-}
-
-
-func GetPostgresDB() *gorm.DB {
 	return db
 }
