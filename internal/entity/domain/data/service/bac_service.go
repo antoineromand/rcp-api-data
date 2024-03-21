@@ -1,8 +1,7 @@
 package service
 
 import (
-	"rcp-api-data/internal/entity"
-
+	entity "rcp-api-data/internal/entity/domain/data"
 	"gorm.io/gorm"
 )
 
