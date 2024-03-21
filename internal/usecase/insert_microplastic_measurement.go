@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"errors"
-	"rcp-api-data/internal/entity"
-	"rcp-api-data/internal/entity/service"
+	entity "rcp-api-data/internal/entity/domain/data"
+	"rcp-api-data/internal/entity/domain/data/service"
 	"rcp-api-data/internal/utils"
 
 	"gorm.io/gorm"
