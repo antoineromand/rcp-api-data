@@ -1,18 +1,19 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
-
 	"rcp-api-data/internal/config"
 	"rcp-api-data/internal/config/database"
 	"rcp-api-data/internal/router"
 )
 
 func main() {
-	
+	migration := flag.Bool("migration", false, "Run migration")
+	flag.Parse()
 	fmt.Println("Starting server...")
-	database.InitDB()
+	database.InitDB(migration)
 	fmt.Println("Database initialized...")
 	cfg := config.GetConfig()
 	if cfg == nil {

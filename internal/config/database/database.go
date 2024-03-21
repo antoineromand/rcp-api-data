@@ -5,7 +5,11 @@ import (
 )
 
 
-func InitDB() {
+func InitDB(_migration *bool) {
 	db := InitPostgresDB()
-	migration.RunMigration(db)
+	if *_migration {
+		migration.RunMigration(db)
+	} else {
+		println("Migration skipped")
+	}
 }
