@@ -9,23 +9,23 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateInformations(db *gorm.DB, uuid string, account dto.AccountDTO) *common.Response {
+func PutInformations(db *gorm.DB, _uuid string, account dto.AccountDTO) *common.Response {
 	sugar := utils.GetLogger()
 	accountRepository := repository.AccountRepository{DB: db}
-	err := accountRepository.CreateAccount(&account, uuid)
+	err := accountRepository.UpdateAccount(&account, _uuid)
 	if err != nil {
-		sugar.Error("Error while creating account profile", err)
+		sugar.Error("Error while updating account profile", err)
 		return &common.Response{
 			Data: nil,
 			Error: &common.CustomError{
-				Message: "Error while creating account profile",
+				Message: "Error while updating account profile",
 			},
 			Code: 400,
 		}
 	}
 	return &common.Response{
-		Data: map[string]string{"message": "Account Profile created successfully"},
+		Data: map[string]string{"message": "Account Profile updated successfully"},
 		Error: nil,
-		Code: 201,
+		Code: 200,
 	}
 }

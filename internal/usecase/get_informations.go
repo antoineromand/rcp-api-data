@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	entity_account "rcp-api-data/internal/entity/domain/account"
+	"rcp-api-data/internal/common"
 	"rcp-api-data/internal/repository"
 	"rcp-api-data/internal/utils"
 
@@ -9,17 +9,15 @@ import (
 )
 
 
-func Get_informations_by_user_uuid(db *gorm.DB, uuid string) (*entity_account.Account, error) {
+func Get_informations_by_user_uuid(db *gorm.DB, uuid string) common.Response {
 	sugar := utils.GetLogger()
 	accountRepository := repository.AccountRepository{DB: db}
 	account, err := accountRepository.GetAccountByUserUUID(uuid)
 	if err != nil {
-		sugar.Error("Error while getting account by user uuid", err)
-		return nil, err
+		sugar.Error("Error while getting account by user uuid, account not found", err)
+		return common.Response{Code: 500, Error: &common.CustomError{
+			Message: "Error while getting account by user uuid, account not found",
+		}, Data: nil}
 	}
-	if account == nil {
-		sugar.Error("Account not found")
-		return nil, nil
-	}
-	return account, nil
+	return common.Response{Code: 200, Error: nil, Data: account}
 }
