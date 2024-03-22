@@ -7,7 +7,7 @@ import (
 
 type Account struct {
 	gorm.Model
-	Username         string    `json:"username"`
+	Username         string    `json:"username" `
 	Email            string    `json:"email"`
 	ActivityMessage  string    `json:"activityMessage"`
 	Address          string    `json:"address"`
@@ -17,7 +17,7 @@ type Account struct {
 	PhoneNumber      string    `json:"phoneNumber"`
 	FirstName        string    `json:"firstName"`
 	LastName         string    `json:"lastName"`
-	IsNew            bool      `json:"isNew" gorm:"default:false"`
+	IsNew            bool      `json:"isNew" gorm:"default:true"`
 	UserUUID         uuid.UUID `json:"_" gorm:"type:uuid;uniqueIndex;not null"`
 }
 
