@@ -61,3 +61,16 @@ func (ar *AccountRepository) CreateAccount(account *dto.AccountDTO, _uuid string
     }
 	return nil
 }
+
+func (ar *AccountRepository) UpdateAccount(account *dto.AccountDTO, _uuid string) error {
+	var entity *entity_account.Account
+	entity, err := ar.GetAccountByUserUUID(_uuid)
+	if err != nil {
+		return err
+	}
+	
+	if err := ar.DB.Model(&entity).Updates(account).Error; err != nil {
+		return err
+	}
+	return nil
+}
