@@ -105,6 +105,12 @@ func drop(db *gorm.DB) error {
 			return fmt.Errorf("failed to drop microplastic_measurement table: %w", err)
 		}
 	}
+	if db.Migrator().HasTable(&entity_account.Account{}) {
+		if err := db.Migrator().DropTable(&entity_account.Account{}); err != nil {
+			sugar.Errorw("failed to drop user table", "error", err)
+			return fmt.Errorf("failed to drop user table: %w", err)
+		}
+	}
 	return nil
 }
 
