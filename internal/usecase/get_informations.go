@@ -9,7 +9,7 @@ import (
 )
 
 
-func Get_informations_by_user_uuid(db *gorm.DB, uuid string) common.Response {
+func GetInformationsByUserUuid(db *gorm.DB, uuid string) common.Response {
 	sugar := utils.GetLogger()
 	accountRepository := repository.AccountRepository{DB: db}
 	account, err := accountRepository.GetAccountByUserUUID(uuid)
