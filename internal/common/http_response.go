@@ -7,6 +7,6 @@ type CustomError struct {
 
 type Response struct {
 	Data   interface{} 
-	Code    uint
+	Code   int
 	Error *CustomError
 }
