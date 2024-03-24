@@ -2,7 +2,6 @@ package dto
 
 type AccountDTO struct {
 	Username        *string `json:"username"`
-	Email           *string `json:"email"`
 	ActivityMessage *string `json:"activityMessage"`
 	Address         *string `json:"address"`
 	City            *string `json:"city"`

@@ -2,15 +2,14 @@ package database
 
 import (
 	"fmt"
-	"rcp-api-data/internal/config"
+	"rcp-api-data/internal/config/security"
 	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func InitPostgresDB() *gorm.DB {
-	env := config.GetConfig()
+func InitPostgresDB(env *security.Environment) *gorm.DB {
 	if env == nil {
 		return nil
 	}

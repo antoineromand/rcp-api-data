@@ -1,9 +1,7 @@
 package repository
 
 import (
-	"rcp-api-data/internal/dto"
 	entity_account "rcp-api-data/internal/entity/domain/account"
-	"rcp-api-data/internal/utils"
 
 	"gorm.io/gorm"
 )
@@ -15,8 +13,8 @@ type AccountRepository struct {
 
 type IAccountRepository interface {
 	GetAccountByUserUUID(uuid string) (*entity_account.Account, error)
-	CreateAccount(account *dto.AccountDTO, _uuid string) error
-	UpdateAccount(account *dto.AccountDTO, _uuid string) error
+	CreateAccount(account *entity_account.Account) error
+	UpdateAccount(account *entity_account.Account) error
 	DeleteAccount(_uuid string) error
 }
 
@@ -35,36 +33,16 @@ func (ar *AccountRepository) GetAccountByUserUUID(uuid string) (*entity_account.
 	return account, nil
 }
 
-func (ar *AccountRepository) CreateAccount(account *dto.AccountDTO, _uuid string) error {
-	
-	userUUID, err := utils.ConvertStringToUUID(_uuid)
-	if err != nil {
-		return err
-	}
-
-	dto := &entity_account.Account{
-		UserUUID: userUUID,
-		Username: *account.Username,        
-		Email: *account.Email,      
-		ActivityMessage: *account.ActivityMessage,
-		Address: *account.Address,      
-		City: *account.City,      
-		Country: *account.Country,    
-		PostalCode: *account.PostalCode,   
-		PhoneNumber: *account.PhoneNumber,     
-		FirstName: *account.FirstName,      
-		LastName: *account.LastName,      
-		IsNew: *account.IsNew, 
-	}
-	if err := ar.DB.Create(dto).Error; err != nil {
+func (ar *AccountRepository) CreateAccount(account *entity_account.Account) error {
+	if err := ar.DB.Create(account).Error; err != nil {
         return err
     }
 	return nil
 }
 
-func (ar *AccountRepository) UpdateAccount(account *dto.AccountDTO, _uuid string) error {
+func (ar *AccountRepository) UpdateAccount(account *entity_account.Account) error {
 	var entity *entity_account.Account
-	entity, err := ar.GetAccountByUserUUID(_uuid)
+	entity, err := ar.GetAccountByUserUUID(account.UserUUID.String()) 
 	if err != nil {
 		return err
 	}

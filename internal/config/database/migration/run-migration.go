@@ -5,8 +5,8 @@ import (
 	"fmt"
 	entity_account "rcp-api-data/internal/entity/domain/account"
 	entity_data "rcp-api-data/internal/entity/domain/data"
-	"rcp-api-data/internal/utils"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -14,15 +14,13 @@ import (
 var ErrMigrationNilDB = errors.New("cannot run migration, db connection is missing")
 
 // RunMigration runs the database migration
-func RunMigration(db *gorm.DB) error {
-	sugar := utils.GetLogger()
-
+func RunMigration(db *gorm.DB, sugar *zap.SugaredLogger) error {
 	if db == nil {
 		sugar.Panic(ErrMigrationNilDB)
 		return ErrMigrationNilDB
 	}
 
-	if err := drop(db); err != nil {
+	if err := drop(db, sugar); err != nil {
 		sugar.Errorw("failed to drop tables", "error", err)
 		return fmt.Errorf("failed to drop tables: %w", err)
 	}
@@ -35,7 +33,7 @@ func RunMigration(db *gorm.DB) error {
 	}
 	sugar.Info("Enums created")
 
-	if err := createTables(db); err != nil {
+	if err := createTables(db, sugar); err != nil {
 		sugar.Errorw("failed to create tables", "error", err)
 		return fmt.Errorf("failed to create tables: %w", err)
 	}
@@ -64,8 +62,7 @@ func createEnums(db *gorm.DB) error {
 }
 
 // drop drops all tables from the database
-func drop(db *gorm.DB) error {
-	sugar := utils.GetLogger()
+func drop(db *gorm.DB, sugar *zap.SugaredLogger) error {
 	if db == nil {
 		return nil
 	}
@@ -115,8 +112,7 @@ func drop(db *gorm.DB) error {
 }
 
 // createTables creates all tables in the database
-func createTables(db *gorm.DB) error {
-	sugar := utils.GetLogger()
+func createTables(db *gorm.DB, sugar *zap.SugaredLogger) error {
 	if db == nil {
 		return nil
 	}

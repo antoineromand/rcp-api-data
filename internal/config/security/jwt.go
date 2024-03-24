@@ -1,8 +1,9 @@
-package config
+package security
 
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"strings"
 )
 
@@ -15,8 +16,14 @@ type TokenFromCookie struct {
 
 
 func DecodePayload(token string) (TokenFromCookie, error) {
+	if token == "" {
+		return TokenFromCookie{}, errors.New("token is empty")
+	}
 	var tokenData TokenFromCookie
 	splitToken := strings.Split(token, ".")
+	if len(splitToken) < 2 {
+		return tokenData, errors.New("invalid token")
+	}
 	payload, err := base64.StdEncoding.DecodeString(splitToken[1])
 	if err != nil {
 		return tokenData, err

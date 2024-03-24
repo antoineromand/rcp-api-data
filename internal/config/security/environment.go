@@ -1,8 +1,8 @@
-package config
+package security
 
 import (
+	"errors"
 	"fmt"
-	"log"
 
 	"github.com/caarlos0/env/v10"
 	"github.com/joho/godotenv"
@@ -18,24 +18,25 @@ type Environment struct {
 	PG_PORT string `env:"DB_SERVER_PORT"`
 	PG_HOST string `env:"DB_SERVER_HOST"`
 }
-
-var cfg Environment
-
-func init() {
-	loadEnv := godotenv.Load()
+func InitEnvironment(testing bool) *Environment {
+	var loadEnv error
+	if testing == true {
+		loadEnv = godotenv.Load("../.env")
+	} else {
+		loadEnv = godotenv.Load()
+	}
 	if loadEnv != nil {
 		fmt.Print(loadEnv)
 	}
+	cfg := Environment{}
 	if err := env.Parse(&cfg); err != nil {
-		log.Fatalf("Erreur lors du parsing des variables d'environnement : %+v\n", err)
+		errors.New("error while parsing env variables")
+		return nil
 	}
+	return &cfg
 }
 
 func (e *Environment) GetAuthURL() string {
 	return e.RCP_AUTH_PROTOCOL + "://" + e.RCP_AUTH_URL + ":" + e.RCP_AUTH_PORT
-}
-
-func GetConfig() *Environment {
-	return &cfg
 }
 
