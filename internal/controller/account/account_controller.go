@@ -23,6 +23,7 @@ func AccountController(db *gorm.DB) http.HandlerFunc {
 				err := json.NewDecoder(r.Body).Decode(&accountDTO)
 				if err != nil {
 					http.Error(w, "Error while decoding request body", http.StatusBadRequest)
+					return
 				}
 				accountBytes, err := json.Marshal(accountDTO)
 				response := usecase.CreateInformations(db, token.UUID, accountBytes)
@@ -50,6 +51,7 @@ func AccountController(db *gorm.DB) http.HandlerFunc {
 				err := json.NewDecoder(r.Body).Decode(&accountDTO)
 				if err != nil {
 					http.Error(w, "Error while decoding request body", http.StatusBadRequest)
+					return
 				}
 				accountBytes, err := json.Marshal(accountDTO)
 				response := usecase.PutInformations(db, token.UUID, accountBytes)
@@ -64,6 +66,9 @@ func AccountController(db *gorm.DB) http.HandlerFunc {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(response.Code)
 				json.NewEncoder(w).Encode(response.Data)
+			case "DELETE":
+				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+				return 
 		}
 			
     }
