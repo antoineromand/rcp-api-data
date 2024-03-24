@@ -17,7 +17,7 @@ type Account struct {
 	FirstName        *string    `json:"firstName"`
 	LastName         *string    `json:"lastName"`
 	IsNew            *bool      `json:"isNew" gorm:"default:true"`
-	UserUUID         uuid.UUID `json:"_" gorm:"type:uuid;uniqueIndex;not null"`
+	UserUUID         uuid.UUID `json:"-" gorm:"type:uuid;uniqueIndex;not null"`
 }
 
 func NewAccount(username, email, activityMessage, address, city, country, postalCode, phoneNumber, firstName, lastName *string, isNew *bool, userUUID uuid.UUID) *Account {
