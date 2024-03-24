@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"rcp-api-data/internal/config/security"
 	"strings"
@@ -19,7 +18,6 @@ func ValidateTokenMiddleware(next http.Handler, cfg *security.Environment) http.
             http.Error(w, "Erreur lors de la requête à l'API d'authentification 1", http.StatusInternalServerError)
             return 
         }
-        fmt.Println("ValidateTokenMiddleware")
         authHeader := r.Header.Get("Authorization")
         if (!strings.HasPrefix(authHeader, "Bearer ") || len(strings.Split(authHeader, " ")) != 2){
             http.Error(w, "Invalid 'Authorization' header", http.StatusUnauthorized)
