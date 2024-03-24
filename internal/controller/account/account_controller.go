@@ -37,6 +37,33 @@ func AccountController(db *gorm.DB) http.HandlerFunc {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(response.Code)
 				json.NewEncoder(w).Encode(response.Data)
+			case "GET":
+				response := usecase.GetInformationsByUserUuid(db, token.UUID)
+				if response.Error != nil {
+					http.Error(w, response.Error.Message, response.Code)
+					return
+				}
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(response.Code)
+				json.NewEncoder(w).Encode(response.Data)
+			case "PUT":
+				err := json.NewDecoder(r.Body).Decode(&accountDTO)
+				if err != nil {
+					http.Error(w, "Error while decoding request body", http.StatusBadRequest)
+				}
+				accountBytes, err := json.Marshal(accountDTO)
+				response := usecase.PutInformations(db, token.UUID, accountBytes)
+				if err != nil {
+					http.Error(w, "Error while marshalling account DTO", http.StatusBadRequest)
+					return
+				}
+				if response.Error != nil {
+					http.Error(w, response.Error.Message, response.Code)
+					return
+				}
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(response.Code)
+				json.NewEncoder(w).Encode(response.Data)
 		}
 			
     }
