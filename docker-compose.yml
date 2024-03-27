@@ -22,6 +22,30 @@ services:
         - "${DB_SERVER_PORT}"
       ports:
         - "${DB_SERVER_PORT}:${DB_SERVER_PORT}"
+  rcp-api-data:
+    container_name: rcp-api-data
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - DB_SERVER_HOST=${DB_SERVER_HOST}
+      - DB_SERVER_PORT=${DB_SERVER_PORT}
+      - DB_SERVER_DATABASE=${DB_SERVER_DATABASE}
+      - DB_SERVER_USER=${DB_SERVER_USER}
+      - DB_SERVER_PASSWORD=${DB_SERVER_PASSWORD}
+      - PORT=${PORT}
+      - RCP_AUTH_PROTOCOL=${RCP_AUTH_PROTOCOL}
+      - RCP_AUTH_URL=${RCP_AUTH_URL}
+      - RCP_AUTH_PORT=${RCP_AUTH_PORT}
+    networks:
+      - data-database-network
+    depends_on:
+      - data-database
+    expose:
+      - ${PORT}
+    ports:
+      - ${PORT}:${PORT}
 networks:
   data-database-network:
     driver: bridge
