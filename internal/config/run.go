@@ -20,7 +20,7 @@ func Execute(sugar *zap.SugaredLogger, _migration *bool, testing bool) *RunConfi
 		return nil
 	}
 	sugar.Info("Config loaded")
-	db, err := database.InitDB(cfg, sugar, _migration)
+	db, err := database.InitDB(cfg, sugar, cfg.MIGRATE)
 	if err != nil {
 		sugar.Error(err)
 		return nil
@@ -28,6 +28,6 @@ func Execute(sugar *zap.SugaredLogger, _migration *bool, testing bool) *RunConfi
 	sugar.Info("Database connected")
 	return &RunConfig{
 		Cfg: cfg,
-		Db: db,
+		Db:  db,
 	}
 }

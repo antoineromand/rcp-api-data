@@ -9,13 +9,12 @@ import (
 	"gorm.io/gorm"
 )
 
-
-func InitDB(env *security.Environment, sugar *zap.SugaredLogger, _migration *bool) (*gorm.DB, error) {
+func InitDB(env *security.Environment, sugar *zap.SugaredLogger, _migration bool) (*gorm.DB, error) {
 	db := InitPostgresDB(env)
 	if db == nil {
 		return nil, errors.New("database initialization failed")
 	}
-	if *_migration {
+	if _migration {
 		migration.RunMigration(db, sugar)
 	} else {
 		sugar.Info("Migration skipped")
