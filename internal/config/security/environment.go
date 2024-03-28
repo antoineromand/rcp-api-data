@@ -7,17 +7,20 @@ import (
 	"github.com/caarlos0/env/v10"
 	"github.com/joho/godotenv"
 )
+
 type Environment struct {
-	Port string `env:"PORT"`
-	RCP_AUTH_URL string `env:"RCP_AUTH_URL"`
-	RCP_AUTH_PORT string `env:"RCP_AUTH_PORT"`
+	Port              string `env:"PORT"`
+	RCP_AUTH_URL      string `env:"RCP_AUTH_URL"`
+	RCP_AUTH_PORT     string `env:"RCP_AUTH_PORT"`
 	RCP_AUTH_PROTOCOL string `env:"RCP_AUTH_PROTOCOL"`
-	PG_USER string `env:"DB_SERVER_USER"`
-	PG_PASSWORD string `env:"DB_SERVER_PASSWORD"`
-	PG_DBNAME string `env:"DB_SERVER_DATABASE"`
-	PG_PORT string `env:"DB_SERVER_PORT"`
-	PG_HOST string `env:"DB_SERVER_HOST"`
+	PG_USER           string `env:"DB_SERVER_USER"`
+	PG_PASSWORD       string `env:"DB_SERVER_PASSWORD"`
+	PG_DBNAME         string `env:"DB_SERVER_DATABASE"`
+	PG_PORT           string `env:"DB_SERVER_PORT"`
+	PG_HOST           string `env:"DB_SERVER_HOST"`
+	CORS_ORIGIN       string `env:"CORS_ORIGIN"`
 }
+
 func InitEnvironment(testing bool) *Environment {
 	var loadEnv error
 	if testing == true {
@@ -39,4 +42,3 @@ func InitEnvironment(testing bool) *Environment {
 func (e *Environment) GetAuthURL() string {
 	return e.RCP_AUTH_PROTOCOL + "://" + e.RCP_AUTH_URL + ":" + e.RCP_AUTH_PORT
 }
-
