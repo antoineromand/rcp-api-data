@@ -35,7 +35,7 @@ func AccountController(db *gorm.DB) http.HandlerFunc {
 				return
 			}
 			accountBytes, err := json.Marshal(accountDTO)
-			response := usecase.PutInformations(db, token.UUID, token.Username, accountBytes)
+			response := usecase.PutInformations(db, token.UUID, accountBytes)
 			if err != nil {
 				http.Error(w, "Error while marshalling account DTO", http.StatusBadRequest)
 				return
