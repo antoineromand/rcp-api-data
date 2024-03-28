@@ -20,6 +20,7 @@ type Environment struct {
 	PG_HOST           string `env:"DB_SERVER_HOST"`
 	CORS_ORIGIN       string `env:"CORS_ORIGIN"`
 	MIGRATE           bool   `env:"MIGRATE"`
+	PREFIX 		  string `env:"PREFIX"`
 }
 
 func InitEnvironment(testing bool) *Environment {
