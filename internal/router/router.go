@@ -10,5 +10,5 @@ import (
 )
 
 func Router(db *gorm.DB, cfg *security.Environment) {
-	http.Handle("/api/account/me", middleware.CorsMiddleware(middleware.ValidateTokenMiddleware(http.HandlerFunc(controller_account.AccountController(db)), cfg)), cfg)
+	http.Handle("/api/account/me", middleware.CorsMiddleware(middleware.ValidateTokenMiddleware(http.HandlerFunc(controller_account.AccountController(db)), cfg), cfg))
 }

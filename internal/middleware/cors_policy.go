@@ -10,7 +10,7 @@ import (
 
 func CorsMiddleware(h http.Handler, cfg *security.Environment) http.Handler {
 	hosts := cfg.CORS_ORIGIN
-	allowedOrigins := strings.Split(corsOrigins, ",")
+	allowedOrigins := strings.Split(hosts, ",")
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   allowedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
