@@ -13,6 +13,7 @@ type Environment struct {
 	RCP_AUTH_URL      string `env:"RCP_AUTH_URL"`
 	RCP_AUTH_PORT     string `env:"RCP_AUTH_PORT"`
 	RCP_AUTH_PROTOCOL string `env:"RCP_AUTH_PROTOCOL"`
+	RCP_AUTH_PREFIX   string `env:"RCP_AUTH_PREFIX"`
 	PG_USER           string `env:"DB_SERVER_USER"`
 	PG_PASSWORD       string `env:"DB_SERVER_PASSWORD"`
 	PG_DBNAME         string `env:"DB_SERVER_DATABASE"`
@@ -20,7 +21,7 @@ type Environment struct {
 	PG_HOST           string `env:"DB_SERVER_HOST"`
 	CORS_ORIGIN       string `env:"CORS_ORIGIN"`
 	MIGRATE           bool   `env:"MIGRATE"`
-	PREFIX 		      string `env:"PREFIX"`
+	PREFIX            string `env:"PREFIX"`
 }
 
 func InitEnvironment(testing bool) (*Environment, error) {
