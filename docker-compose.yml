@@ -38,10 +38,15 @@ services:
       - RCP_AUTH_PROTOCOL=${RCP_AUTH_PROTOCOL}
       - RCP_AUTH_URL=${RCP_AUTH_URL}
       - RCP_AUTH_PORT=${RCP_AUTH_PORT}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - MIGRATE=${MIGRATE}
+      - PREFIX=${PREFIX}
     networks:
       - data-database-network
+      - portainer_proxy-network
     depends_on:
-      - data-database
+      auth-database:
+        condition: service_healthy
     expose:
       - ${PORT}
     ports:
@@ -49,5 +54,7 @@ services:
 networks:
   data-database-network:
     driver: bridge
+  portainer_proxy-network:
+    external: true
 volumes:
   data-database-data:

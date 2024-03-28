@@ -20,12 +20,12 @@ type Environment struct {
 	PG_HOST           string `env:"DB_SERVER_HOST"`
 	CORS_ORIGIN       string `env:"CORS_ORIGIN"`
 	MIGRATE           bool   `env:"MIGRATE"`
-	PREFIX 		  string `env:"PREFIX"`
+	PREFIX 		      string `env:"PREFIX"`
 }
 
-func InitEnvironment(testing bool) *Environment {
+func InitEnvironment(testing bool) (*Environment, error) {
 	var loadEnv error
-	if testing == true {
+	if testing {
 		loadEnv = godotenv.Load("../.env")
 	} else {
 		loadEnv = godotenv.Load()
@@ -35,10 +35,10 @@ func InitEnvironment(testing bool) *Environment {
 	}
 	cfg := Environment{}
 	if err := env.Parse(&cfg); err != nil {
-		errors.New("error while parsing env variables")
-		return nil
+		err = errors.New("error while parsing env variables")
+		return nil, err
 	}
-	return &cfg
+	return &cfg, nil
 }
 
 func (e *Environment) GetAuthURL() string {

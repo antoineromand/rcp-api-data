@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"net/http"
 	"rcp-api-data/internal/config"
 	"rcp-api-data/internal/router"
@@ -10,15 +9,20 @@ import (
 )
 
 func main() {
-	migration := flag.Bool("migration", false, "Run migration")
-	flag.Parse()
 	sugar := utils.GetLogger()
 	sugar.Info("Starting server...")
 	sugar.Info("Database connected")
-	var runConfig *config.RunConfig
-	runConfig = config.Execute(sugar, migration, false)
+	runConfig := config.Execute(sugar, false)
 	db := runConfig.Db
+	if db == nil {
+		sugar.Error("Could not connect to database")
+		return
+	}
 	cfg := runConfig.Cfg
+	if cfg == nil {
+		sugar.Error("Could not load configurations")
+		return
+	}
 	if runConfig == nil {
 		sugar.Error("Could not run configurations")
 		return

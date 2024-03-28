@@ -13,9 +13,9 @@ type RunConfig struct {
 	Db  *gorm.DB
 }
 
-func Execute(sugar *zap.SugaredLogger, _migration *bool, testing bool) *RunConfig {
-	cfg := security.InitEnvironment(testing)
-	if cfg == nil {
+func Execute(sugar *zap.SugaredLogger, testing bool) *RunConfig {
+	cfg, err := security.InitEnvironment(testing)
+	if err != nil {
 		sugar.Error("Config not found")
 		return nil
 	}
