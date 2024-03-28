@@ -22,35 +22,33 @@ services:
         - "${DB_SERVER_PORT}"
       ports:
         - "${DB_SERVER_PORT}:${DB_SERVER_PORT}"
-  rcp-api-data:
-    container_name: rcp-api-data
-    build:
-      context: .
-      dockerfile: Dockerfile
+  data:
+    container_name: data
+    image: recupplast/api:latest
     restart: unless-stopped
     environment:
-      - DB_SERVER_HOST=${DB_SERVER_HOST}
-      - DB_SERVER_PORT=${DB_SERVER_PORT}
-      - DB_SERVER_DATABASE=${DB_SERVER_DATABASE}
-      - DB_SERVER_USER=${DB_SERVER_USER}
-      - DB_SERVER_PASSWORD=${DB_SERVER_PASSWORD}
-      - PORT=${PORT}
-      - RCP_AUTH_PROTOCOL=${RCP_AUTH_PROTOCOL}
-      - RCP_AUTH_URL=${RCP_AUTH_URL}
-      - RCP_AUTH_PORT=${RCP_AUTH_PORT}
-      - CORS_ORIGIN=${CORS_ORIGIN}
-      - MIGRATE=${MIGRATE}
-      - PREFIX=${PREFIX}
+      DB_SERVER_HOST: "${DB_SERVER_HOST}"
+      DB_SERVER_PORT: "${DB_SERVER_PORT}"
+      DB_SERVER_DATABASE: "${DB_SERVER_DATABASE}"
+      DB_SERVER_USER: "${DB_SERVER_USER}"
+      DB_SERVER_PASSWORD: "${DB_SERVER_PASSWORD}"
+      PORT: "${PORT}"
+      RCP_AUTH_PROTOCOL: "${RCP_AUTH_PROTOCOL}"
+      RCP_AUTH_URL: "${RCP_AUTH_URL}"
+      RCP_AUTH_PORT: "${RCP_AUTH_PORT}"
+      CORS_ORIGIN: "${CORS_ORIGIN}"
+      MIGRATE: "${MIGRATE}"
+      PREFIX: "${PREFIX}"
     networks:
       - data-database-network
       - portainer_proxy-network
     depends_on:
-      auth-database:
+      data-database:
         condition: service_healthy
     expose:
-      - ${PORT}
+      - "${PORT}"
     ports:
-      - ${PORT}:${PORT}
+      - "${PORT}:${PORT}"
 networks:
   data-database-network:
     driver: bridge
