@@ -44,8 +44,9 @@ func InitEnvironment(testing bool) (*Environment, error) {
 
 func (e *Environment) GetAuthURL() string {
 	url := e.RCP_AUTH_PROTOCOL + "://" + e.RCP_AUTH_URL + ":" + e.RCP_AUTH_PORT
-	if e.RCP_AUTH_PREFIX != "" {
+	if len(e.RCP_AUTH_PREFIX) > 0 {
 		url += "/" + e.RCP_AUTH_PREFIX
 	}
+	fmt.Print(url)
 	return url
 }
