@@ -36,10 +36,11 @@ services:
       RCP_AUTH_PROTOCOL: "${RCP_AUTH_PROTOCOL}"
       RCP_AUTH_URL: "${RCP_AUTH_URL}"
       RCP_AUTH_PORT: "${RCP_AUTH_PORT}"
-      RCP_AUTH_PREFIX: "{RCP_AUTH_PREFIX}"
+      RCP_AUTH_PREFIX: "${RCP_AUTH_PREFIX}"
       CORS_ORIGIN: "${CORS_ORIGIN}"
       MIGRATE: "${MIGRATE}"
       PREFIX: "${PREFIX}"
+
     networks:
       - api-database-network
       - portainer_proxy-network
