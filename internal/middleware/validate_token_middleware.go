@@ -42,7 +42,7 @@ func ValidateTokenMiddleware(next http.Handler, cfg *security.Environment, sugar
 		defer resp.Body.Close()
 		// Vérifiez si le statut de la réponse est 200
 		if resp.StatusCode == http.StatusOK {
-
+			sugar.Info("Token valide")
 			// Extraire le bearer token du header authorize
 			rawToken := strings.Split(authHeader, " ")[1]
 			if rawToken == "" {
@@ -55,8 +55,10 @@ func ValidateTokenMiddleware(next http.Handler, cfg *security.Environment, sugar
 				http.Error(w, "Erreur lors du décodage du token JWT", http.StatusUnauthorized)
 				return
 			}
+			sugar.Info("Token décodé", token)
 			// Ajouter les informations décodées à la requête, si nécessaire
 			newRequest := r.WithContext(context.WithValue(r.Context(), TokenKey, token))
+			sugar.Info("Token ajouté à la requête")
 			// Passez à la prochaine manipulation dans la chaîne
 			next.ServeHTTP(w, newRequest)
 		} else {
