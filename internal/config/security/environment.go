@@ -43,5 +43,5 @@ func InitEnvironment(testing bool) (*Environment, error) {
 }
 
 func (e *Environment) GetAuthURL() string {
-	return e.RCP_AUTH_PROTOCOL + "://" + e.RCP_AUTH_URL + ":" + e.RCP_AUTH_PORT
+	return e.RCP_AUTH_PROTOCOL + "://" + e.RCP_AUTH_URL + ":" + e.RCP_AUTH_PORT + "/" + e.RCP_AUTH_PREFIX
 }

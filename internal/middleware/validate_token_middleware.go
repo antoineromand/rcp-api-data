@@ -26,7 +26,7 @@ func ValidateTokenMiddleware(next http.Handler, cfg *security.Environment, sugar
 			http.Error(w, "Invalid 'Authorization' header", http.StatusUnauthorized)
 		}
 		// Envoi de la requête GET à l'API d'authentification avec un header Authorization
-		req, err := http.NewRequest("GET", cfg.GetAuthURL()+cfg.RCP_AUTH_PREFIX+"/token-check", nil)
+		req, err := http.NewRequest("GET", cfg.GetAuthURL()+"/token-check", nil)
 		if err != nil {
 			sugar.Error("Erreur lors de la requête à l'API d'authentification (step 2)", err)
 			http.Error(w, "Erreur lors de la requête à l'API d'authentification (step 2)", http.StatusInternalServerError)
