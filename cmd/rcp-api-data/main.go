@@ -27,8 +27,8 @@ func main() {
 		sugar.Error("Could not run configurations")
 		return
 	}
-	router.Router(db, cfg)
-	err := http.ListenAndServe(":" + cfg.Port, nil)
+	router.Router(db, cfg, sugar)
+	err := http.ListenAndServe(":"+cfg.Port, nil)
 	if err != nil {
 		sugar.Error(err)
 		return

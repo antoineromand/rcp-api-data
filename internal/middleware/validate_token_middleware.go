@@ -2,17 +2,19 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"rcp-api-data/internal/config/security"
 	"strings"
+
+	"go.uber.org/zap"
 )
 
 type CtxTokenKey string
 
 const TokenKey CtxTokenKey = "token"
 
-func ValidateTokenMiddleware(next http.Handler, cfg *security.Environment) http.Handler {
+func ValidateTokenMiddleware(next http.Handler, cfg *security.Environment, sugar *zap.SugaredLogger) http.Handler {
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Envoi de la requête GET à l'API d'authentification
 		if cfg == nil {
@@ -26,13 +28,14 @@ func ValidateTokenMiddleware(next http.Handler, cfg *security.Environment) http.
 		// Envoi de la requête GET à l'API d'authentification avec un header Authorization
 		req, err := http.NewRequest("GET", cfg.GetAuthURL()+cfg.RCP_AUTH_PREFIX+"/token-check", nil)
 		if err != nil {
+			sugar.Error("Erreur lors de la requête à l'API d'authentification (step 2)", err)
 			http.Error(w, "Erreur lors de la requête à l'API d'authentification (step 2)", http.StatusInternalServerError)
 			return
 		}
 		req.Header.Set("Authorization", authHeader)
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
-			fmt.Println(err)
+			sugar.Error("Erreur lors de la requête à l'API d'authentification (step 3)", err)
 			http.Error(w, "Erreur lors de la requête à l'API d'authentification (step 3)", http.StatusInternalServerError)
 			return
 		}
