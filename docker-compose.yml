@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  data-database:
-      container_name: data-database
+  api-database:
+      container_name: api-database
       image: postgres:alpine
       restart: unless-stopped
       healthcheck:
@@ -15,16 +15,16 @@ services:
         POSTGRES_PASSWORD: "${DB_SERVER_PASSWORD}"
       command: -p ${DB_SERVER_PORT}
       volumes:
-        - data-database-data:/var/lib/postgresql/data
+        - api-database-data:/var/lib/postgresql/data
       networks:
-        - data-database-network
+        - api-database-network
       expose:
         - "${DB_SERVER_PORT}"
       ports:
         - "${DB_SERVER_PORT}:${DB_SERVER_PORT}"
-  data:
-    container_name: data
-    image: recupplast/api:latest
+  api:
+    container_name: api
+    image: recupplast/api:main
     restart: unless-stopped
     environment:
       DB_SERVER_HOST: "${DB_SERVER_HOST}"
@@ -36,23 +36,24 @@ services:
       RCP_AUTH_PROTOCOL: "${RCP_AUTH_PROTOCOL}"
       RCP_AUTH_URL: "${RCP_AUTH_URL}"
       RCP_AUTH_PORT: "${RCP_AUTH_PORT}"
+      RCP_AUTH_PREFIX: "{RCP_AUTH_PREFIX}"
       CORS_ORIGIN: "${CORS_ORIGIN}"
       MIGRATE: "${MIGRATE}"
       PREFIX: "${PREFIX}"
     networks:
-      - data-database-network
+      - api-database-network
       - portainer_proxy-network
     depends_on:
-      data-database:
+      api-database:
         condition: service_healthy
     expose:
       - "${PORT}"
     ports:
       - "${PORT}:${PORT}"
 networks:
-  data-database-network:
+  api-database-network:
     driver: bridge
   portainer_proxy-network:
     external: true
 volumes:
-  data-database-data:
+  api-database-data:
