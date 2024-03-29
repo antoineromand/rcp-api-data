@@ -19,7 +19,6 @@ func AccountMapping(dtoBytes []byte, uuid *uuid.UUID) (account.Account, error) {
 		return account.Account{}, errors.New("UUID is nil")
 	}
 	return account.Account{
-		Username:        dto.Username,
 		ActivityMessage: dto.ActivityMessage,
 		Address:         dto.Address,
 		City:            dto.City,

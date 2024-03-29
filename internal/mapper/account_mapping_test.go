@@ -12,7 +12,6 @@ func TestAccountMapping(t *testing.T) {
 	t.Run("should not return error", func(t *testing.T) {
 		// Créer un objet JSON d'input avec des valeurs null pour certains champs
 		inputData := dto.AccountDTO{
-			Username:        nil,
 			ActivityMessage: nil,
 			Address:         nil,
 			City:            nil,
@@ -54,7 +53,6 @@ func TestAccountMapping(t *testing.T) {
 	// Test for nil UUID
 	t.Run("should return an error if uuid is nil", func(t *testing.T) {
 		inputData := dto.AccountDTO{
-			Username:        nil,
 			ActivityMessage: nil,
 			Address:         nil,
 			City:            nil,
