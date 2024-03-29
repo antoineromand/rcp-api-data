@@ -22,7 +22,6 @@ type Environment struct {
 	CORS_ORIGIN       string `env:"CORS_ORIGIN"`
 	MIGRATE           bool   `env:"MIGRATE"`
 	PREFIX            string `env:"PREFIX"`
-	PROD_URL          string `env:"PROD_URL"`
 }
 
 func InitEnvironment(testing bool) (*Environment, error) {
@@ -44,9 +43,6 @@ func InitEnvironment(testing bool) (*Environment, error) {
 }
 
 func (e *Environment) GetAuthURL() string {
-	if e.PROD_URL != "" {
-		return e.PROD_URL
-	}
 	url := e.RCP_AUTH_PROTOCOL + "://" + e.RCP_AUTH_URL + ":" + e.RCP_AUTH_PORT
 	if e.RCP_AUTH_PREFIX != "" {
 		url += "/" + e.RCP_AUTH_PREFIX
