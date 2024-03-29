@@ -8,12 +8,11 @@ import (
 )
 
 type TokenFromCookie struct {
-    UUID string `json:"uuid"`
-    Username string `json:"username"`
-    RolePermission map[string][] string `json:"rolePermission"`
+	UUID           string              `json:"uuid"`
+	Username       string              `json:"username"`
+	Email          string              `json:"email"`
+	RolePermission map[string][]string `json:"rolePermission"`
 }
-
-
 
 func DecodePayload(token string) (TokenFromCookie, error) {
 	if token == "" {

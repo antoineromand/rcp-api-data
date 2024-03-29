@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"rcp-api-data/internal/common"
+	"rcp-api-data/internal/config/security"
 	account_entity "rcp-api-data/internal/entity/domain/account"
 	"rcp-api-data/internal/repository"
 	"rcp-api-data/internal/utils"
@@ -9,12 +10,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetInformationsByUserUuid(db *gorm.DB, uuid string, username string) common.Response {
+func GetInformationsByUserUuid(db *gorm.DB, token *security.TokenFromCookie) common.Response {
 	sugar := utils.GetLogger()
 	accountRepository := repository.AccountRepository{DB: db}
-	account, err := accountRepository.GetAccountByUserUUID(uuid)
+	account, err := accountRepository.GetAccountByUserUUID(token.UUID)
+	var accountWithCredentials account_entity.AccountWithCredentials
+	accountWithCredentials.Username = token.Username
+	accountWithCredentials.Email = token.Email
 	if err == gorm.ErrRecordNotFound {
-		convertedUUID, err := utils.ConvertStringToUUID(uuid)
+		convertedUUID, err := utils.ConvertStringToUUID(token.UUID)
 		if err != nil {
 			sugar.Error("Error while converting string to UUID", err)
 			return common.Response{
@@ -27,7 +31,6 @@ func GetInformationsByUserUuid(db *gorm.DB, uuid string, username string) common
 		}
 		dto := &account_entity.Account{
 			UserUUID: convertedUUID,
-			Username: &username,
 		}
 		account, err := accountRepository.CreateAccount(dto)
 		if err != nil {
@@ -40,7 +43,8 @@ func GetInformationsByUserUuid(db *gorm.DB, uuid string, username string) common
 				Data: nil,
 			}
 		}
-		return common.Response{Code: 200, Error: nil, Data: account}
+		accountWithCredentials.Account = *account
+		return common.Response{Code: 200, Error: nil, Data: accountWithCredentials}
 	}
 	if err != nil {
 		sugar.Error("Error while getting account profile", err)
@@ -52,5 +56,6 @@ func GetInformationsByUserUuid(db *gorm.DB, uuid string, username string) common
 			Data: nil,
 		}
 	}
-	return common.Response{Code: 200, Error: nil, Data: account}
+	accountWithCredentials.Account = *account
+	return common.Response{Code: 200, Error: nil, Data: accountWithCredentials}
 }

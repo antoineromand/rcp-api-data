@@ -20,7 +20,7 @@ func AccountController(db *gorm.DB) http.HandlerFunc {
 		var accountDTO dto.AccountDTO
 		switch r.Method {
 		case "GET":
-			response := usecase.GetInformationsByUserUuid(db, token.UUID, token.Username)
+			response := usecase.GetInformationsByUserUuid(db, &token)
 			if response.Error != nil {
 				http.Error(w, response.Error.Message, response.Code)
 				return
