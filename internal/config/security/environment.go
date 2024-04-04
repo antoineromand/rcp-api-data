@@ -47,6 +47,5 @@ func (e *Environment) GetAuthURL() string {
 	if len(e.RCP_AUTH_PREFIX) > 0 {
 		url += "/" + e.RCP_AUTH_PREFIX
 	}
-	fmt.Print(url)
 	return url
 }
