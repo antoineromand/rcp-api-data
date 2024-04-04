@@ -6,11 +6,11 @@ import (
 )
 
 func BacController() http.HandlerFunc {
-	
-    return func(w http.ResponseWriter, r *http.Request) {
+
+	return func(w http.ResponseWriter, r *http.Request) {
 		sugar := utils.GetLogger()
 
-        switch r.Method {
+		switch r.Method {
 		case "POST":
 			token, err := utils.GetContextToken(r)
 			if err != nil {
@@ -19,5 +19,5 @@ func BacController() http.HandlerFunc {
 			}
 			sugar.Info("Token: ", token)
 		}
-    }
+	}
 }
