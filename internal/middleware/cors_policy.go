@@ -8,8 +8,18 @@ import (
 	"github.com/rs/cors"
 )
 
-func CorsMiddleware(h http.Handler, cfg *security.Environment) http.Handler {
-	hosts := cfg.CORS_ORIGIN
+type CorsMiddleware struct {
+	cfg *security.Environment
+}
+
+func NewCorsMiddleware(cfg *security.Environment) *CorsMiddleware {
+	return &CorsMiddleware{
+		cfg: cfg,
+	}
+}
+
+func (c *CorsMiddleware) Config(h http.Handler) http.Handler {
+	hosts := c.cfg.CORS_ORIGIN
 	allowedOrigins := strings.Split(hosts, ",")
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   allowedOrigins,
