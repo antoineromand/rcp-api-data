@@ -9,9 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func PutInformations(db *gorm.DB, _uuid string, account []byte) *common.Response {
+type PutInformationsUsecase struct {
+	db *gorm.DB
+}
+
+func NewPutInformationsUsecase(db *gorm.DB) *PutInformationsUsecase {
+	return &PutInformationsUsecase{
+		db: db,
+	}
+}
+
+func (u *PutInformationsUsecase) PutInformations(_uuid string, account []byte) *common.Response {
 	sugar := utils.GetLogger()
-	accountRepository := repository.AccountRepository{DB: db}
+	accountRepository := repository.AccountRepository{DB: u.db}
 	uuid, err := utils.ConvertStringToUUID(_uuid)
 	if err != nil {
 		sugar.Error("Error while converting string to UUID", err)
@@ -46,8 +56,8 @@ func PutInformations(db *gorm.DB, _uuid string, account []byte) *common.Response
 		}
 	}
 	return &common.Response{
-		Data: map[string]string{"message": "Account Profile updated successfully"},
+		Data:  map[string]string{"message": "Account Profile updated successfully"},
 		Error: nil,
-		Code: 200,
+		Code:  200,
 	}
 }

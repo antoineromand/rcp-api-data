@@ -10,13 +10,20 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetInformationsByUserUuid(db *gorm.DB, token *security.TokenFromCookie) common.Response {
+type GetInformationsUseCase struct {
+	db *gorm.DB
+}
+
+func NewGetInformationsUseCase(db *gorm.DB) *GetInformationsUseCase {
+	return &GetInformationsUseCase{
+		db: db,
+	}
+}
+
+func (e *GetInformationsUseCase) GetInformationsByUserUuid(token *security.TokenFromCookie) common.Response {
 	sugar := utils.GetLogger()
-	accountRepository := repository.AccountRepository{DB: db}
+	accountRepository := repository.AccountRepository{DB: e.db}
 	account, err := accountRepository.GetAccountByUserUUID(token.UUID)
-	var accountWithCredentials account_entity.AccountWithCredentials
-	accountWithCredentials.Username = token.Username
-	accountWithCredentials.Email = token.Email
 	if err == gorm.ErrRecordNotFound {
 		convertedUUID, err := utils.ConvertStringToUUID(token.UUID)
 		if err != nil {
@@ -31,6 +38,8 @@ func GetInformationsByUserUuid(db *gorm.DB, token *security.TokenFromCookie) com
 		}
 		dto := &account_entity.Account{
 			UserUUID: convertedUUID,
+			Username: token.Username,
+			Email:    token.Email,
 		}
 		account, err := accountRepository.CreateAccount(dto)
 		if err != nil {
@@ -43,8 +52,7 @@ func GetInformationsByUserUuid(db *gorm.DB, token *security.TokenFromCookie) com
 				Data: nil,
 			}
 		}
-		accountWithCredentials.Account = *account
-		return common.Response{Code: 200, Error: nil, Data: accountWithCredentials}
+		return common.Response{Code: 200, Error: nil, Data: account}
 	}
 	if err != nil {
 		sugar.Error("Error while getting account profile", err)
@@ -56,6 +64,5 @@ func GetInformationsByUserUuid(db *gorm.DB, token *security.TokenFromCookie) com
 			Data: nil,
 		}
 	}
-	accountWithCredentials.Account = *account
-	return common.Response{Code: 200, Error: nil, Data: accountWithCredentials}
+	return common.Response{Code: 200, Error: nil, Data: account}
 }
