@@ -22,6 +22,7 @@ type Environment struct {
 	CORS_ORIGIN       string `env:"CORS_ORIGIN"`
 	MIGRATE           bool   `env:"MIGRATE"`
 	PREFIX            string `env:"PREFIX"`
+	RP_BROKERS        string `env:"RP_BROKERS"`
 }
 
 func InitEnvironment(testing bool) (*Environment, error) {
