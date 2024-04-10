@@ -2,6 +2,9 @@ package usecase
 
 import (
 	"rcp-api-data/internal/common"
+	"rcp-api-data/internal/config"
+	"rcp-api-data/internal/config/security"
+	"rcp-api-data/internal/dto"
 	"rcp-api-data/internal/mapper"
 	"rcp-api-data/internal/repository"
 	"rcp-api-data/internal/utils"
@@ -10,12 +13,14 @@ import (
 )
 
 type PutInformationsUsecase struct {
-	db *gorm.DB
+	db  *gorm.DB
+	cfg *security.Environment
 }
 
-func NewPutInformationsUsecase(db *gorm.DB) *PutInformationsUsecase {
+func NewPutInformationsUsecase(db *gorm.DB, cfg *security.Environment) *PutInformationsUsecase {
 	return &PutInformationsUsecase{
-		db: db,
+		db:  db,
+		cfg: cfg,
 	}
 }
 
@@ -33,7 +38,8 @@ func (u *PutInformationsUsecase) PutInformations(_uuid string, account []byte) *
 			Code: 400,
 		}
 	}
-	accountEntity, err := mapper.AccountMapping(account, &uuid)
+	accountMappingResult, err := mapper.AccountMapping(account, &uuid)
+	accountEntity := accountMappingResult.Account
 	if err != nil {
 		sugar.Error("Error while mapping account", err)
 		return &common.Response{
@@ -54,6 +60,11 @@ func (u *PutInformationsUsecase) PutInformations(_uuid string, account []byte) *
 			},
 			Code: 400,
 		}
+	}
+	if accountEntity.Username != nil || accountEntity.Email != nil || accountMappingResult.Password != nil {
+		redPanda := config.NewKafkaService(utils.ConvertEnvStringToArray(u.cfg.RP_BROKERS), "updateCredentials")
+		var userCredentials = dto.NewUserCredentialsDTO(accountEntity.Username, accountMappingResult.Password, accountEntity.Email)
+		redPanda.SendMessage(accountEntity.UserUUID.String(), userCredentials)
 	}
 	return &common.Response{
 		Data:  map[string]string{"message": "Account Profile updated successfully"},
