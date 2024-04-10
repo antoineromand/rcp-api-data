@@ -9,5 +9,8 @@ type AccountDTO struct {
 	PhoneNumber     *string `json:"phoneNumber"`
 	FirstName       *string `json:"firstName"`
 	LastName        *string `json:"lastName"`
+	Username        *string `json:"username"`
+	Email           *string `json:"email"`
+	Pasword         *string `json:"password"`
 	IsNew           *bool   `json:"isNew"`
 }
