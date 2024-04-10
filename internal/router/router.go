@@ -14,6 +14,6 @@ func Router(db *gorm.DB, cfg *security.Environment, sugar *zap.SugaredLogger) {
 	prefix := cfg.PREFIX
 	tokenMiddleware := middleware.NewTokenMiddleware(cfg, sugar)
 	corsMiddleware := middleware.NewCorsMiddleware(cfg)
-	accountController := controller_account.NewAccountController(db)
+	accountController := controller_account.NewAccountController(db, cfg)
 	http.Handle(prefix+"/information/me", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(accountController.GetController()))))
 }

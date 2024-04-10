@@ -9,25 +9,35 @@ import (
 	"github.com/google/uuid"
 )
 
-func AccountMapping(dtoBytes []byte, uuid *uuid.UUID) (account.Account, error) {
+type AccountMappingResponse struct {
+	Account  account.Account
+	Password *string
+}
+
+func AccountMapping(dtoBytes []byte, uuid *uuid.UUID) (AccountMappingResponse, error) {
 	var dto dto.AccountDTO
 	if err := json.Unmarshal(dtoBytes, &dto); err != nil {
-		return account.Account{}, err
+		return AccountMappingResponse{}, err
 	}
 
 	if uuid == nil {
-		return account.Account{}, errors.New("UUID is nil")
+		return AccountMappingResponse{}, errors.New("UUID is nil")
 	}
-	return account.Account{
-		ActivityMessage: dto.ActivityMessage,
-		Address:         dto.Address,
-		City:            dto.City,
-		Country:         dto.Country,
-		PostalCode:      dto.PostalCode,
-		PhoneNumber:     dto.PhoneNumber,
-		FirstName:       dto.FirstName,
-		LastName:        dto.LastName,
-		IsNew:           dto.IsNew,
-		UserUUID:        *uuid,
+	return AccountMappingResponse{
+		Account: account.Account{
+			ActivityMessage: dto.ActivityMessage,
+			Address:         dto.Address,
+			City:            dto.City,
+			Country:         dto.Country,
+			PostalCode:      dto.PostalCode,
+			PhoneNumber:     dto.PhoneNumber,
+			FirstName:       dto.FirstName,
+			LastName:        dto.LastName,
+			IsNew:           dto.IsNew,
+			Username:        dto.Username,
+			Email:           dto.Email,
+			UserUUID:        *uuid,
+		},
+		Password: dto.Pasword,
 	}, nil
 }

@@ -3,6 +3,7 @@ package controller_account
 import (
 	"encoding/json"
 	"net/http"
+	"rcp-api-data/internal/config/security"
 	"rcp-api-data/internal/dto"
 	"rcp-api-data/internal/usecase"
 	"rcp-api-data/internal/utils"
@@ -11,12 +12,14 @@ import (
 )
 
 type AccountController struct {
-	db *gorm.DB
+	db  *gorm.DB
+	cfg *security.Environment
 }
 
-func NewAccountController(db *gorm.DB) *AccountController {
+func NewAccountController(db *gorm.DB, cfg *security.Environment) *AccountController {
 	return &AccountController{
-		db: db,
+		db:  db,
+		cfg: cfg,
 	}
 }
 
@@ -46,7 +49,7 @@ func (c *AccountController) GetController() http.HandlerFunc {
 				return
 			}
 			accountBytes, err := json.Marshal(accountDTO)
-			_usecase := usecase.NewPutInformationsUsecase(c.db)
+			_usecase := usecase.NewPutInformationsUsecase(c.db, c.cfg)
 			response := _usecase.PutInformations(token.UUID, accountBytes)
 			if err != nil {
 				http.Error(w, "Error while marshalling account DTO", http.StatusBadRequest)

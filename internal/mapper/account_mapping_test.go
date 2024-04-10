@@ -35,7 +35,7 @@ func TestAccountMapping(t *testing.T) {
 			t.Errorf("Error while creating input JSON: %v", err)
 		}
 
-		if account.UserUUID != uuid {
+		if account.Account.UserUUID != uuid {
 			t.Errorf("Error while mapping account")
 		}
 	})
