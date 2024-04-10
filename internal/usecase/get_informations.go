@@ -38,8 +38,8 @@ func (e *GetInformationsUseCase) GetInformationsByUserUuid(token *security.Token
 		}
 		dto := &account_entity.Account{
 			UserUUID: convertedUUID,
-			Username: token.Username,
-			Email:    token.Email,
+			Username: &token.Username,
+			Email:    &token.Email,
 		}
 		account, err := accountRepository.CreateAccount(dto)
 		if err != nil {

@@ -16,12 +16,12 @@ type Account struct {
 	FirstName       *string   `json:"firstName"`
 	LastName        *string   `json:"lastName"`
 	IsNew           *bool     `json:"isNew" gorm:"default:true"`
-	Username        string    `json:"username" gorm:"not null"`
-	Email           string    `json:"email" gorm:"not null"`
+	Username        *string   `json:"username" gorm:"not null"`
+	Email           *string   `json:"email" gorm:"not null"`
 	UserUUID        uuid.UUID `json:"-" gorm:"type:uuid;uniqueIndex;not null"`
 }
 
-func NewAccount(activityMessage, address, city, country, postalCode, phoneNumber, firstName, lastName *string, isNew *bool, userUUID uuid.UUID, username, email string) *Account {
+func NewAccount(activityMessage, address, city, country, postalCode, phoneNumber, firstName, lastName *string, isNew *bool, userUUID uuid.UUID, username, email *string) *Account {
 	return &Account{
 		ActivityMessage: activityMessage,
 		Address:         address,
