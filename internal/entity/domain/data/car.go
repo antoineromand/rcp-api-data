@@ -13,22 +13,26 @@ const (
 )
 
 type Car struct {
-	ID uint `json:"id" gorm:"primary_key AUTO_INCREMENT"`
-	CarBrandID uint `json:"brand_id"`
-	Year int `json:"year"`
-	FuelType FuelType `json:"fuel_type" gorm:"type:fuelType"`
-	Car_Model string `json:"model"`
-	CreatedAt time.Time `json:"created_at" gorm:"default:CURRENT_TIMESTAMP"`
-	UpdatedAt time.Time `json:"updated_at" gorm:"default:CURRENT_TIMESTAMP"`
-	Car_User []Car_User `gorm:"foreignKey:CarID"`
+	ID         uint       `json:"id" gorm:"primary_key AUTO_INCREMENT"`
+	CarBrandID uint       `json:"brand_id"`
+	Year       int        `json:"year"`
+	FuelType   FuelType   `json:"fuel_type" gorm:"type:fuelType"`
+	Car_Model  string     `json:"model"`
+	CreatedAt  time.Time  `json:"created_at" gorm:"default:CURRENT_TIMESTAMP"`
+	UpdatedAt  time.Time  `json:"updated_at" gorm:"default:CURRENT_TIMESTAMP"`
+	Car_User   []Car_User `gorm:"foreignKey:CarID"`
+}
+
+func (Car) TableName() string {
+	return "car"
 }
 
 func NewCar(brand uint, year int, fuelType FuelType, model string) *Car {
 	return &Car{
 		CarBrandID: brand,
-		Year: year,
-		FuelType: fuelType,
-		Car_Model: model,
+		Year:       year,
+		FuelType:   fuelType,
+		Car_Model:  model,
 	}
 }
 
@@ -67,4 +71,3 @@ func (c *Car) SetFuelType(fuelType FuelType) {
 func (c *Car) SetModel(model string) {
 	c.Car_Model = model
 }
-

@@ -19,6 +19,10 @@ func NewMicroplasticMeasurement(bac uint, weight float64, created_at time.Time) 
 	}
 }
 
+func (MicroplasticMeasurement) TableName() string {
+	return "microplastic_measurement"
+}
+
 func (m *MicroplasticMeasurement) GetID() uint {
 	return m.ID
 }

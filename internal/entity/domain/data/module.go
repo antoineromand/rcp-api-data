@@ -7,15 +7,19 @@ import (
 )
 
 type CentraleModule struct {
-	ID        uuid.UUID 
-	Name      string     
-	SSID      string    
-	Password  string     
-	Safer     string     
-	Car_User  Car_User   `gorm:"foreignKey:CarUserID"`
-	CarUserID uint       
-	CreatedAt time.Time  
-	Bac []Bac `gorm:"foreignKey:CentraleModuleID"`
+	ID        uuid.UUID
+	Name      string
+	SSID      string
+	Password  string
+	Safer     string
+	Car_User  Car_User `gorm:"foreignKey:CarUserID"`
+	CarUserID uint
+	CreatedAt time.Time
+	Bac       []Bac `gorm:"foreignKey:CentraleModuleID"`
+}
+
+func (CentraleModule) TableName() string {
+	return "centrale_module"
 }
 
 func NewCentraleModul(name, ssid, password, safer string, car_user Car_User) *CentraleModule {

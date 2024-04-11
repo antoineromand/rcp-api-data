@@ -21,6 +21,10 @@ type Account struct {
 	UserUUID        uuid.UUID `json:"-" gorm:"type:uuid;uniqueIndex;not null"`
 }
 
+func (Account) TableName() string {
+	return "account"
+}
+
 func NewAccount(activityMessage, address, city, country, postalCode, phoneNumber, firstName, lastName *string, isNew *bool, userUUID uuid.UUID, username, email *string) *Account {
 	return &Account{
 		ActivityMessage: activityMessage,

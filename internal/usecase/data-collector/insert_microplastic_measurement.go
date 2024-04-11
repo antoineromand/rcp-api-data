@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InsertMicroplasticMeasurement(db *gorm.DB,measurement *entity.MicroplasticMeasurement) error {
+func InsertMicroplasticMeasurement(db *gorm.DB, measurement *entity.MicroplasticMeasurement) error {
 	sugar := utils.GetLogger()
 	if measurement == nil {
 		sugar.Error("Measurement is nil, please provide a valid measurement")

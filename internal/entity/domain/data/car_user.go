@@ -7,17 +7,21 @@ import (
 
 type Car_User struct {
 	gorm.Model
-	Id uint64 `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key"`
-	CarID uint `json:"car_id"`
-	User_uuid uuid.UUID `json:"user_uuid"`
-	Name string `json:"name"`
+	Id             uint64           `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key"`
+	CarID          uint             `json:"car_id"`
+	User_uuid      uuid.UUID        `json:"user_uuid"`
+	Name           string           `json:"name"`
 	CentraleModule []CentraleModule `gorm:"foreignKey:CarUserID"`
+}
+
+func (Car_User) TableName() string {
+	return "car_user"
 }
 
 func NewCarUser(user_uuid uuid.UUID, name string) *Car_User {
 	return &Car_User{
 		User_uuid: user_uuid,
-		Name: name,
+		Name:      name,
 	}
 }
 
