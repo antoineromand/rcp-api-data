@@ -40,10 +40,11 @@ services:
       CORS_ORIGIN: "${CORS_ORIGIN}"
       MIGRATE: "${MIGRATE}"
       PREFIX: "${PREFIX}"
-
+      RP_BROKERS: "${RP_BROKERS}"
     networks:
       - api-database-network
       - portainer_proxy-network
+      - red-panda_broker-network
     depends_on:
       api-database:
         condition: service_healthy
@@ -55,6 +56,8 @@ networks:
   api-database-network:
     driver: bridge
   portainer_proxy-network:
+    external: true
+  red-panda_broker-network:
     external: true
 volumes:
   api-database-data:
