@@ -144,5 +144,32 @@ func createTables(db *gorm.DB, sugar *zap.SugaredLogger) error {
 		sugar.Errorw("failed to create user table", "error", err)
 		return fmt.Errorf("failed to create user table: %w", err)
 	}
+	runSeed(db, sugar)
 	return nil
+}
+
+func runSeed(db *gorm.DB, sugar *zap.SugaredLogger) {
+	if db == nil {
+		return
+	}
+	seedForBrandAndCar(db, sugar)
+
+}
+
+func seedForBrandAndCar(db *gorm.DB, sugar *zap.SugaredLogger) {
+	if db == nil {
+		return
+	}
+	db.Create(&entity_data.Brand{
+		ID:   10001,
+		Name: "BMW",
+	})
+	sugar.Info("Brand BMW created")
+	db.Create(&entity_data.Car{
+		CarBrandID: 10001,
+		Car_Model:  "X5",
+		Year:       2021,
+		FuelType:   "diesel",
+	})
+	sugar.Info("Car BMW X5 created")
 }
