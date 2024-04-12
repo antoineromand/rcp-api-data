@@ -15,6 +15,7 @@ type IBacRepository interface {
 	UpdateBac(*data.Bac) (*data.Bac, error)
 	DeleteBacByID(uint) error
 	GetStats(uuid.UUID) (*interface{}, error)
+	GetBacsWithLastMeasurementByUserUUID(uuid.UUID, uint) ([]dto.BacWithLastMeasurement, error)
 }
 
 type BacRepository struct {
@@ -84,7 +85,7 @@ func (br *BacRepository) GetStats(uuid uuid.UUID) (*interface{}, error) {
 	return &stats, nil
 }
 
-func (cur *BacRepository) GetBacsWithLastMeasurementByUserUUID(userUUID uuid.UUID) ([]dto.BacWithLastMeasurement, error) {
+func (cur *BacRepository) GetBacsWithLastMeasurementByUserUUID(userUUID uuid.UUID, car_user_id uint) ([]dto.BacWithLastMeasurement, error) {
 	var bacs []dto.BacWithLastMeasurement
 
 	result := cur.DB.
@@ -92,8 +93,10 @@ func (cur *BacRepository) GetBacsWithLastMeasurementByUserUUID(userUUID uuid.UUI
 		Joins("JOIN car_user ON bac.centrale_module_id = car_user.id").
 		Joins("JOIN car ON car_user.car_id = car.id").
 		Joins("JOIN brand ON car.car_brand_id = brand.id").
+		Joins("LEFT JOIN (SELECT bac_id, MAX(created_at) AS last_measurement_date, weight FROM microplastic_measurement GROUP BY bac_id, weight) AS last_measurement ON bac.id = last_measurement.bac_id").
 		Where("car_user.user_uuid = ?", userUUID).
-		Select("bac.id, bac.name, (SELECT mm.weight FROM microplastic_measurement mm WHERE mm.bac_id = bac.id ORDER BY mm.created_at DESC LIMIT 1) AS last_measurement").
+		Where("car_user.id = ?", car_user_id).
+		Select("bac.id, last_measurement.last_measurement_date AS date, last_measurement.weight AS last_measurement").
 		Find(&bacs)
 
 	if result.Error != nil {
