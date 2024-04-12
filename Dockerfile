@@ -11,6 +11,7 @@ COPY . .
 
 # Se déplacer dans le dossier où se trouve le main.go et construire l'application
 WORKDIR /app/cmd/rcp-api-data
+RUN go mod verify
 RUN go build -o server .
 
 # Étape finale, configuration de l'image minimaliste
