@@ -2,6 +2,6 @@ package dto
 
 type BacWithLastMeasurement struct {
 	ID              uint    `json:"id"`
-	Name            string  `json:"name"`
+	Date            string  `json:"date"`
 	LastMeasurement float64 `json:"last_measurement"`
 }
