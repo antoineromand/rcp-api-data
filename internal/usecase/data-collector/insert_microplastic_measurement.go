@@ -36,6 +36,11 @@ func (e *InsertMicroplasticMeasurementUseCase) InsertMicroplasticMeasurement(_uu
 	if err != nil {
 		tx.Rollback()
 		fmt.Println("Error mapping microplastic measurement : ", err)
+		return IMResponse{
+			Success: false,
+			Code:    500,
+			Message: "Error mapping microplastic measurement",
+		}
 	}
 	uuid, err := utils.ConvertStringToUUID(_uuid)
 	if err != nil {

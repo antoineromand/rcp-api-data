@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	entity_account "rcp-api-data/internal/entity/domain/account"
+	entity_content "rcp-api-data/internal/entity/domain/content"
 	entity_data "rcp-api-data/internal/entity/domain/data"
 
 	"go.uber.org/zap"
@@ -108,6 +109,12 @@ func drop(db *gorm.DB, sugar *zap.SugaredLogger) error {
 			return fmt.Errorf("failed to drop user table: %w", err)
 		}
 	}
+	if db.Migrator().HasTable(&entity_content.Message{}) {
+		if err := db.Migrator().DropTable(&entity_content.Message{}); err != nil {
+			sugar.Errorw("failed to drop message table", "error", err)
+			return fmt.Errorf("failed to drop message table: %w", err)
+		}
+	}
 	return nil
 }
 
@@ -143,6 +150,10 @@ func createTables(db *gorm.DB, sugar *zap.SugaredLogger) error {
 	if err := db.Migrator().CreateTable(&entity_account.Account{}); err != nil {
 		sugar.Errorw("failed to create user table", "error", err)
 		return fmt.Errorf("failed to create user table: %w", err)
+	}
+	if err := db.Migrator().CreateTable(&entity_content.Message{}); err != nil {
+		sugar.Errorw("failed to create message table", "error", err)
+		return fmt.Errorf("failed to create message table: %w", err)
 	}
 	runSeed(db, sugar)
 	return nil
