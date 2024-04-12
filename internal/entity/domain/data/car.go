@@ -20,7 +20,7 @@ type Car struct {
 	Car_Model  string     `json:"model"`
 	CreatedAt  time.Time  `json:"created_at" gorm:"default:CURRENT_TIMESTAMP"`
 	UpdatedAt  time.Time  `json:"updated_at" gorm:"default:CURRENT_TIMESTAMP"`
-	Car_User   []Car_User `gorm:"foreignKey:CarID"`
+	Car_User   []Car_User `gorm:"foreignKey:CarID" json:"-"`
 }
 
 func (Car) TableName() string {
