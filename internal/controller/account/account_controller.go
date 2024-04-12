@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"rcp-api-data/internal/config/security"
 	"rcp-api-data/internal/dto"
-	"rcp-api-data/internal/usecase"
+	usecase "rcp-api-data/internal/usecase/account"
 	"rcp-api-data/internal/utils"
 
 	"gorm.io/gorm"
