@@ -12,8 +12,10 @@ type ICarUserRepository interface {
 	CreateCarUser(*data.Car_User) (*data.Car_User, error)
 	GetCarUserByID(uint) (*data.Car_User, error)
 	GetAllCarUsers() ([]data.Car_User, error)
+	GetAllCarByUserUuid(uuid.UUID) ([]data.Car_User, error)
 	UpdateCarUser(*data.Car_User) (*data.Car_User, error)
 	DeleteCarUserByID(uint) error
+	CheckIfCarUserExistByUserUUIDAndCarUserID(uuid.UUID, uint) bool
 }
 
 type CarUserRepository struct {
@@ -77,12 +79,30 @@ func (cur *CarUserRepository) GetAllCarUsers() ([]data.Car_User, error) {
 	return car_users, nil
 }
 
+func (cur *CarUserRepository) GetAllCarByUserUuid(uuid uuid.UUID) ([]data.Car_User, error) {
+	var car_users []data.Car_User
+	result := cur.DB.Where("user_uuid = ?", uuid).Find(&car_users)
+	if result.Error == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return car_users, nil
+}
+
 func (cur *CarUserRepository) DeleteCarUserByID(id uint) error {
 	result := cur.DB.Where("id = ?", id).Delete(&data.Car_User{})
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
+}
+
+func (cur *CarUserRepository) CheckIfCarUserExistByUserUUIDAndCarUserID(userUUID uuid.UUID, carUserID uint) bool {
+	var count int64
+	cur.DB.Model(&data.Car_User{}).Where("user_uuid = ? AND id = ?", userUUID, carUserID).Count(&count)
+	return count > 0
 }
 
 func (cur *CarUserRepository) GetCarsWithBacCountByUserUUID(userUUID uuid.UUID) ([]dto.CarWithBacCount, error) {
