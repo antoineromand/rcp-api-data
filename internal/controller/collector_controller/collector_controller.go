@@ -50,7 +50,7 @@ func (cc *CollectorController) Controller() http.HandlerFunc {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(response)
-
+		
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
