@@ -20,7 +20,7 @@ func NewCarUserController(db *gorm.DB) *CarUserController {
 	}
 }
 
-func (cc *CarUserController) CarUserController() http.HandlerFunc {
+func (cc *CarUserController) Controller() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		sugar := utils.GetLogger()
 		token, err := utils.GetContextToken(r)
@@ -50,7 +50,7 @@ func (cc *CarUserController) CarUserController() http.HandlerFunc {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusCreated)
-			json.NewEncoder(w).Encode(response.Message)
+			json.NewEncoder(w).Encode(response)
 		}
 	}
 }

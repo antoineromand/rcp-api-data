@@ -21,7 +21,7 @@ func NewCarController(db *gorm.DB) *CarController {
 	}
 }
 
-func (cc *CarController) CarController() http.HandlerFunc {
+func (cc *CarController) Controller() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		sugar := utils.GetLogger()
 
@@ -36,7 +36,7 @@ func (cc *CarController) CarController() http.HandlerFunc {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(response.Data)
+			json.NewEncoder(w).Encode(response)
 		}
 	}
 }

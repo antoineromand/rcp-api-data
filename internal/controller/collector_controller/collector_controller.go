@@ -21,7 +21,7 @@ func NewCollectorController(db *gorm.DB) *CollectorController {
 	}
 }
 
-func (cc *CollectorController) CollectorController() http.HandlerFunc {
+func (cc *CollectorController) Controller() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token, err := utils.GetContextToken(r)
 		if err != nil {

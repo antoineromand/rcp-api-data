@@ -23,12 +23,11 @@ func NewAccountController(db *gorm.DB, cfg *security.Environment) *AccountContro
 	}
 }
 
-func (c *AccountController) GetController() http.HandlerFunc {
+func (c *AccountController) Controller() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token, err := utils.GetContextToken(r)
 		if err != nil {
 			http.Error(w, "Token introuvable", http.StatusUnauthorized)
-
 		}
 		var accountDTO dto.AccountDTO
 		switch r.Method {
