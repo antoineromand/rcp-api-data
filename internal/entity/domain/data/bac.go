@@ -4,9 +4,9 @@ import "gorm.io/gorm"
 
 type Bac struct {
 	gorm.Model
-	Id               uint64 `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key"`
-	Name             string
-	CentraleModuleID uint
+	Id               uint                      `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key"`
+	Name             *string                   `json:"name"`
+	CentraleModuleID uint                      `json:"centrale_module_id"`
 	Mesurements      []MicroplasticMeasurement `gorm:"foreignKey:BacID"`
 }
 
@@ -14,25 +14,9 @@ func (Bac) TableName() string {
 	return "bac"
 }
 
-func NewBac(name string, central_module uint) *Bac {
+func NewBac(id uint, central_module uint) *Bac {
 	return &Bac{
-		Name:             name,
+		Id:               id,
 		CentraleModuleID: central_module,
 	}
-}
-
-func (b *Bac) GetName() string {
-	return b.Name
-}
-
-func (b *Bac) GetCentralModuleID() uint {
-	return b.CentraleModuleID
-}
-
-func (b *Bac) SetName(name string) {
-	b.Name = name
-}
-
-func (b *Bac) SetCentralModuleID(central_module uint) {
-	b.CentraleModuleID = central_module
 }
