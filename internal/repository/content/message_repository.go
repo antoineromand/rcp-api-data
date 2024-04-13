@@ -55,9 +55,10 @@ func (r *MessageRepository) DeleteMessage(id uint) error {
 	return nil
 }
 
-func (r *MessageRepository) GetMessage(id uint) (entity_content.Message, error) {
+func (r *MessageRepository) GetMessage() (entity_content.Message, error) {
 	message := entity_content.Message{}
-	result := r.DB.Where("id = ?", id).First(&message)
+	// get last message (created_at DESC)
+	result := r.DB.Last(&message)
 	if result.Error != nil {
 		return entity_content.Message{}, result.Error
 	}

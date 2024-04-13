@@ -6,6 +6,7 @@ import (
 	controller_account "rcp-api-data/internal/controller/account"
 	carcontroller "rcp-api-data/internal/controller/car_controller"
 	collectorcontroller "rcp-api-data/internal/controller/collector_controller"
+	contentcontroller "rcp-api-data/internal/controller/content_controller"
 	"rcp-api-data/internal/middleware"
 
 	"go.uber.org/zap"
@@ -21,11 +22,13 @@ func Router(db *gorm.DB, cfg *security.Environment, sugar *zap.SugaredLogger) {
 	carUserController := carcontroller.NewCarUserController(db)
 	collectorController := collectorcontroller.NewCollectorController(db)
 	collectorStatsController := collectorcontroller.NewCollectorStatsController(db)
+	contentController := contentcontroller.NewMessageController(db)
 	http.Handle(prefix+"/information/me", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(accountController.Controller()))))
 	http.Handle(prefix+"/data-collector/car", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carController.Controller()))))
 	http.Handle(prefix+"/data-collector/car/user", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carUserController.Controller()))))
 	http.Handle(prefix+"/data-collector", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(collectorController.Controller()))))
 	http.Handle(prefix+"/data-collector/stats/", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(collectorStatsController.Controller()))))
 	http.Handle(prefix+"/data-collector/car/user/", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carUserController.Controller()))))
+	http.Handle(prefix+"/content/message", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(contentController.Controller()))))
 
 }
