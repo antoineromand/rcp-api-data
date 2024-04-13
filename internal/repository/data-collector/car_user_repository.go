@@ -16,6 +16,7 @@ type ICarUserRepository interface {
 	UpdateCarUser(*data.Car_User) (*data.Car_User, error)
 	DeleteCarUserByID(uint) error
 	CheckIfCarUserExistByUserUUIDAndCarUserID(uuid.UUID, uint) bool
+	GetCarsWithBacCountByUserUUID(uuid.UUID) ([]dto.CarWithBacCount, error)
 }
 
 type CarUserRepository struct {
@@ -113,12 +114,14 @@ func (cur *CarUserRepository) GetCarsWithBacCountByUserUUID(userUUID uuid.UUID) 
 		Joins("JOIN bac ON car_user.id = bac.centrale_module_id").
 		Joins("JOIN brand ON car.car_brand_id = brand.id").
 		Where("car_user.user_uuid = ?", userUUID).
-		Select("car.id, brand.name, car.year, car.fuel_type, car.car_model, COUNT(bac.id) AS bac_count").
+		Select("car.id, brand.name AS brand, car.year, car.fuel_type, car.car_model AS model, COUNT(bac.id) AS bac_count").
 		Group("car.id").
+		Group("brand.name").
+		Debug().
 		Find(&cars)
 
 	if result.Error == gorm.ErrRecordNotFound {
-		return nil, nil
+		return nil, result.Error
 	}
 	if result.Error != nil {
 		return nil, result.Error

@@ -2,9 +2,9 @@ package dto
 
 type CarWithBacCount struct {
 	ID       uint   `json:"id"`
-	BrandName  uint   `json:"brand_name"`
+	Brand    string `json:"brand"`
 	Year     int    `json:"year"`
 	FuelType string `json:"fuel_type"`
 	Model    string `json:"model"`
-	BacCount uint64 `json:"bac_count"`
+	BacCount uint64 `json:"nb_bacs"`
 }

@@ -26,5 +26,6 @@ func Router(db *gorm.DB, cfg *security.Environment, sugar *zap.SugaredLogger) {
 	http.Handle(prefix+"/data-collector/car/user", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carUserController.Controller()))))
 	http.Handle(prefix+"/data-collector", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(collectorController.Controller()))))
 	http.Handle(prefix+"/data-collector/stats/", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(collectorStatsController.Controller()))))
+	http.Handle(prefix+"/data-collector/car/user/", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carUserController.Controller()))))
 
 }

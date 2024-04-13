@@ -51,6 +51,19 @@ func (cc *CarUserController) Controller() http.HandlerFunc {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusCreated)
 			json.NewEncoder(w).Encode(response)
+		case "GET":
+			usecase := usecase.NewGetCarsUserByIdUseCase(cc.DB)
+			response := usecase.GetCarsUserById(token.UUID)
+			if !response.Success {
+				sugar.Error(response.Message)
+				http.Error(w, response.Message, http.StatusNotFound)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(response)
+
 		}
+
 	}
 }
