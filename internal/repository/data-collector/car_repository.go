@@ -1,6 +1,7 @@
 package repository
 
 import (
+	dto "rcp-api-data/internal/dto/data-collector"
 	"rcp-api-data/internal/entity/domain/data"
 
 	"gorm.io/gorm"
@@ -9,7 +10,7 @@ import (
 type ICarRepository interface {
 	CreateCar(*data.Car) (bool, error)
 	GetCarByID(uint) (*data.Car, error)
-	GetAllCars() ([]data.Car, error)
+	GetAllCars() ([]dto.CarDTO, error)
 	UpdateCar(*data.Car) (*data.Car, error)
 	DeleteCarByID(uint) error
 }
@@ -51,11 +52,15 @@ func (cr *CarRepository) UpdateCar(car *data.Car) (*data.Car, error) {
 	return nil, nil
 }
 
-func (cr *CarRepository) GetAllCars() ([]data.Car, error) {
-	var cars []data.Car
-	result := cr.DB.Find(&cars)
+func (cr *CarRepository) GetAllCars() ([]dto.CarDTO, error) {
+	var cars []dto.CarDTO
+	result := cr.DB.
+		Model(&data.Car{}).
+		Joins("JOIN brand ON car.car_brand_id = brand.id").
+		Select("car.id, brand.name AS brand, car.car_model AS model, car.year, car.fuel_type").
+		Find(&cars)
 	if result.Error == gorm.ErrRecordNotFound {
-		return nil, nil
+		return nil, result.Error
 	}
 	if result.Error != nil {
 		return nil, result.Error

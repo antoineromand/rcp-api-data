@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"rcp-api-data/internal/entity/domain/data"
+	dto "rcp-api-data/internal/dto/data-collector"
 	repository "rcp-api-data/internal/repository/data-collector"
 
 	"gorm.io/gorm"
@@ -14,7 +14,7 @@ type GetCarsUseCase struct {
 type GCResponse struct {
 	Success bool
 	Code    int
-	Data    []data.Car
+	Data    []dto.CarDTO
 }
 
 func NewGetCarsUseCase(db *gorm.DB) *GetCarsUseCase {
@@ -30,7 +30,7 @@ func (e *GetCarsUseCase) GetCars() GCResponse {
 		return GCResponse{
 			Success: false,
 			Code:    500,
-			Data:    []data.Car{},
+			Data:    []dto.CarDTO{},
 		}
 	}
 	return GCResponse{
