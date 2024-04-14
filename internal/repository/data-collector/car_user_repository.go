@@ -111,13 +111,12 @@ func (cur *CarUserRepository) GetCarsWithBacCountByUserUUID(userUUID uuid.UUID) 
 	result := cur.DB.
 		Model(&data.Car{}).
 		Joins("JOIN car_user ON car.id = car_user.car_id").
-		Joins("JOIN bac ON car_user.id = bac.centrale_module_id").
 		Joins("JOIN brand ON car.car_brand_id = brand.id").
+		Joins("LEFT JOIN centrale_module ON car_user.id = centrale_module.car_user_id").
+		Joins("LEFT JOIN bac ON centrale_module.id = bac.centrale_module_id").
 		Where("car_user.user_uuid = ?", userUUID).
-		Select("car.id, brand.name AS brand, car.year, car.fuel_type, car.car_model AS model, COUNT(bac.id) AS bac_count").
-		Group("car.id").
-		Group("brand.name").
-		Debug().
+		Select("car_user.id AS id, brand.name AS brand, car.year, car.fuel_type, car.car_model AS model, COUNT(bac.id) AS bac_count").
+		Group("car_user.id, brand.name, car.year, car.fuel_type, car.car_model").
 		Find(&cars)
 
 	if result.Error == gorm.ErrRecordNotFound {
