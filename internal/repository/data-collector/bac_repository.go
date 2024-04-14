@@ -90,13 +90,12 @@ func (cur *BacRepository) GetBacsWithLastMeasurementByUserUUID(userUUID uuid.UUI
 
 	result := cur.DB.
 		Model(&data.Bac{}).
-		Joins("JOIN car_user ON bac.centrale_module_id = car_user.id").
-		Joins("JOIN car ON car_user.car_id = car.id").
-		Joins("JOIN brand ON car.car_brand_id = brand.id").
-		Joins("LEFT JOIN (SELECT bac_id, MAX(created_at) AS last_measurement_date, weight FROM microplastic_measurement GROUP BY bac_id, weight) AS last_measurement ON bac.id = last_measurement.bac_id").
-		Where("car_user.user_uuid = ?", userUUID).
+		Joins("JOIN centrale_module ON centrale_module.id = bac.centrale_module_id").
+		Joins("JOIN car_user ON centrale_module.car_user_id = car_user.id").
+		Joins("LEFT JOIN microplastic_measurement ON bac.id = microplastic_measurement.bac_id").
 		Where("car_user.id = ?", car_user_id).
-		Select("bac.id, last_measurement.last_measurement_date AS date, last_measurement.weight AS last_measurement").
+		Select("bac.id, MAX(microplastic_measurement.created_at) AS last_measurement_date, microplastic_measurement.weight AS last_measurement").
+		Group("bac.id, microplastic_measurement.weight").
 		Find(&bacs)
 
 	if result.Error != nil {
