@@ -9,8 +9,8 @@ import (
 )
 
 type IBacRepository interface {
-	CreateBac(*data.Bac) (*data.Bac, error)
-	GetBacByID(uint) (data.Bac, error)
+	CreateBac(*data.Bac) (*uint, error)
+	GetBacByID(id, module_id uint) (data.Bac, error)
 	GetAllBacs(uuid.UUID) ([]data.Bac, error)
 	UpdateBac(*data.Bac) (*data.Bac, error)
 	DeleteBacByID(uint) error
@@ -29,16 +29,16 @@ func NewBacRepository(db *gorm.DB) IBacRepository {
 	}
 }
 
-func (br *BacRepository) CreateBac(bac *data.Bac) (*data.Bac, error) {
+func (br *BacRepository) CreateBac(bac *data.Bac) (*uint, error) {
 	if err := br.DB.Create(bac).Error; err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return &bac.ID, nil
 }
 
-func (br *BacRepository) GetBacByID(id uint) (data.Bac, error) {
+func (br *BacRepository) GetBacByID(id, module_id uint) (data.Bac, error) {
 	bac := data.Bac{}
-	result := br.DB.Where("id = ?", id).First(&bac)
+	result := br.DB.Where("e_id = ?", id).Where("bac.centrale_module_id = ?", module_id).First(&bac)
 	if result.Error == gorm.ErrRecordNotFound {
 		return data.Bac{}, gorm.ErrRecordNotFound
 	}

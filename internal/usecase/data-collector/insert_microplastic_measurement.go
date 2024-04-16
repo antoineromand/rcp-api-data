@@ -91,12 +91,12 @@ func (e *InsertMicroplasticMeasurementUseCase) InsertMicroplasticMeasurement(_uu
 				Message: "Erreur lors de la conversion de l'ID du BAC en entier",
 			}
 		}
-
+		var bacEID *uint
 		// Vérifier si le BAC existe
-		bacExists := e.checkIfBacExists(uint(bacID))
-		if !bacExists {
-			created := e.createBac(uint(bacID), *moduleId)
-			if !created {
+		bacEID, err = e.checkIfBacExists(uint(bacID), *moduleId)
+		if err != nil {
+			bacEID, err = e.createBac(uint(bacID), *moduleId)
+			if err != nil {
 				tx.Rollback()
 				return IMResponse{
 					Success: false,
@@ -105,10 +105,9 @@ func (e *InsertMicroplasticMeasurementUseCase) InsertMicroplasticMeasurement(_uu
 				}
 			}
 		}
-
 		// Créer la mesure de microplastique
 		microplastic_measurement := data.MicroplasticMeasurement{
-			BacID:  uint(bacID),
+			BacID:  *bacEID,
 			Weight: value,
 		}
 		// Créer une instance de repository
@@ -166,19 +165,22 @@ func (e *InsertMicroplasticMeasurementUseCase) createModule(ssid, password strin
 	return id, nil
 }
 
-func (e *InsertMicroplasticMeasurementUseCase) checkIfBacExists(bac_id uint) bool {
+func (e *InsertMicroplasticMeasurementUseCase) checkIfBacExists(bac_id uint, module_id uint) (*uint, error) {
 	bac_repository := repository.NewBacRepository(e.DB)
-	_, err := bac_repository.GetBacByID(bac_id)
-	return err == nil
+	bac, err := bac_repository.GetBacByID(bac_id, module_id)
+	if err != nil {
+		return nil, err
+	}
+	return &bac.ID, nil
 }
 
-func (e *InsertMicroplasticMeasurementUseCase) createBac(bac_id uint, module_id uint) bool {
+func (e *InsertMicroplasticMeasurementUseCase) createBac(bac_id uint, module_id uint) (*uint, error) {
 	bac := data.NewBac(bac_id, module_id)
 	bac_repository := repository.NewBacRepository(e.DB)
-	_, err := bac_repository.CreateBac(bac)
+	eid, err := bac_repository.CreateBac(bac)
 	if err != nil {
 		fmt.Println("Error creating bac : ", err)
-		return false
+		return nil, err
 	}
-	return true
+	return eid, nil
 }

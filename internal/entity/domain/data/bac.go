@@ -4,8 +4,7 @@ import "gorm.io/gorm"
 
 type Bac struct {
 	gorm.Model
-	Id               uint                      `json:"id" sql:"AUTO_INCREMENT" gorm:"primary_key"`
-	Name             *string                   `json:"name"`
+	EID              uint                      `json:"eid"`
 	CentraleModuleID uint                      `json:"centrale_module_id"`
 	Mesurements      []MicroplasticMeasurement `gorm:"foreignKey:BacID"`
 }
@@ -14,9 +13,9 @@ func (Bac) TableName() string {
 	return "bac"
 }
 
-func NewBac(id uint, central_module uint) *Bac {
+func NewBac(eid uint, central_module uint) *Bac {
 	return &Bac{
-		Id:               id,
+		EID:              eid,
 		CentraleModuleID: central_module,
 	}
 }
