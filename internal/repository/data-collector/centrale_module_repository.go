@@ -11,6 +11,7 @@ type ICentraleModuleRepository interface {
 	GetCentraleModuleByModuleSSID(ssid string) (*data.CentraleModule, error)
 	GetCentraleModuleIdBySSID(ssid string) (*uint, error)
 	GetAllCentraleModuleByCarUserUUID(*uint) ([]data.CentraleModule, error)
+	GetSSIDByCarUserId(id uint) (*string, error)
 }
 
 type CentraleModuleRepository struct {
@@ -43,6 +44,18 @@ func (cmr *CentraleModuleRepository) GetCentraleModuleByModuleSSID(ssid string) 
 		return nil, result.Error
 	}
 	return module, nil
+}
+
+func (cmr *CentraleModuleRepository) GetSSIDByCarUserId(id uint) (*string, error) {
+	module := &data.CentraleModule{}
+	result := cmr.DB.Where("car_user_id = ?", id).First(module)
+	if result.Error == gorm.ErrRecordNotFound {
+		return nil, gorm.ErrRecordNotFound
+	}
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &module.SSID, nil
 }
 
 func (cmr *CentraleModuleRepository) GetAllCentraleModuleByCarUserUUID(car_user_id *uint) ([]data.CentraleModule, error) {
