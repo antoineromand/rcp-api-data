@@ -15,7 +15,7 @@ type GetDataCollectorUseCase struct {
 type GDBResponse struct {
 	Success bool
 	Message string
-	SSID    *string
+	SSID    string
 	Data    []dto.BacWithLastMeasurement
 }
 
@@ -38,24 +38,26 @@ func (dc *GetDataCollectorUseCase) GetDataByBacs(token string, car_user_id uint)
 	if err != nil {
 		return GDBResponse{
 			Success: false,
-			SSID:    nil,
+			SSID:    "",
 			Message: "Cannot get data",
 			Data:    nil,
 		}
 	}
-	SSID, err := repository.NewModuleRepository(dc.DB).GetSSIDByCarUserId(car_user_id)
-	if err != nil {
-		return GDBResponse{
-			Success: false,
-			SSID:    nil,
-			Message: "Cannot get SSID",
-			Data:    nil,
-		}
+	ssidPtr, _ := repository.NewModuleRepository(dc.DB).GetSSIDByCarUserId(car_user_id)
+	ssid := ""
+	if ssidPtr != nil {
+		// ssidPtr est un pointeur vers la valeur SSID
+		ssid = *ssidPtr
+	}
+
+	// Effacer la valeur de SSID si nécessaire
+	if ssidPtr != nil {
+		*ssidPtr = "" // Cela effacera la valeur de SSID uniquement si ssidPtr n'est pas nil
 	}
 
 	return GDBResponse{
 		Success: true,
-		SSID:    SSID,
+		SSID:    ssid,
 		Message: "Success",
 		Data:    result,
 	}
