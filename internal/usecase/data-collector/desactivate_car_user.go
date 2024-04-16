@@ -21,7 +21,7 @@ func NewDesactivateCarUserUseCase(db *gorm.DB) *DesactivateCarUserUseCase {
 	}
 }
 
-func (d *DesactivateCarUserUseCase) DesactivateCarUser(id uint) DCUResponse {
+func (d *DesactivateCarUserUseCase) DesactivateCarUser(id uint, user_uuid string) DCUResponse {
 	repository := repository.NewCarUserRepository(d.DB)
 	car_user, err := repository.GetCarUserByID(id)
 	if err != nil {
@@ -30,12 +30,19 @@ func (d *DesactivateCarUserUseCase) DesactivateCarUser(id uint) DCUResponse {
 			Message: err.Error(),
 		}
 	}
+	if car_user.User_uuid.String() != user_uuid {
+		return DCUResponse{
+			Success: false,
+			Message: "You are not allowed to desactivate this car user",
+		}
+	}
 	if !car_user.Active {
 		return DCUResponse{
 			Success: false,
 			Message: "Car user already desactivated",
 		}
 	}
+
 	car_user.Active = false
 	_, err = repository.UpdateCarUser(car_user)
 	if err != nil {

@@ -21,13 +21,20 @@ func NewActivateCarUserUseCase(db *gorm.DB) *ActivateCarUserUseCase {
 	}
 }
 
-func (d *ActivateCarUserUseCase) ActivateCarUser(id uint) DCUResponse {
+func (d *ActivateCarUserUseCase) ActivateCarUser(id uint, user_uuid string) DCUResponse {
 	repository := repository.NewCarUserRepository(d.DB)
 	car_user, err := repository.GetCarUserByID(id)
+
 	if err != nil {
 		return DCUResponse{
 			Success: false,
 			Message: err.Error(),
+		}
+	}
+	if car_user.User_uuid.String() != user_uuid {
+		return DCUResponse{
+			Success: false,
+			Message: "You are not allowed to activate this car user",
 		}
 	}
 	if car_user.Active {

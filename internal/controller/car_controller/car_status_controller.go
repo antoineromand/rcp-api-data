@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	usecase "rcp-api-data/internal/usecase/data-collector"
+	"rcp-api-data/internal/utils"
 	"strconv"
 	"strings"
 
@@ -23,13 +24,17 @@ func NewCarStatusController(db *gorm.DB) *CarStatusController {
 func (csc *CarStatusController) Controller() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		token, err := utils.GetContextToken(r)
+		if err != nil {
+			http.Error(w, "Token introuvable", http.StatusUnauthorized)
+		}
+
 		switch r.Method {
 		case "PUT":
 			// Séparer l'URL pour obtenir le dernier segment
 			urlParts := strings.Split(r.URL.Path, "/")
 			action := urlParts[len(urlParts)-2] // Récupérer l'avant-dernier segment de l'URL
 			param := urlParts[len(urlParts)-1]  // Récupérer le dernier segment de l'URL
-
 			// Vérifier si l'action est valide
 			if action != "activate" && action != "desactivate" {
 				http.Error(w, "Invalid action", http.StatusBadRequest)
@@ -52,17 +57,17 @@ func (csc *CarStatusController) Controller() http.HandlerFunc {
 			// Appeler la fonction correspondante en fonction de l'action
 			switch action {
 			case "activate":
-				csc.activate(uint(paramUint), w)
+				csc.activate(uint(paramUint), w, token.UUID)
 			case "desactivate":
-				csc.desactivate(uint(paramUint), w)
+				csc.desactivate(uint(paramUint), w, token.UUID)
 			}
 		}
 	}
 }
 
-func (csc *CarStatusController) activate(id uint, w http.ResponseWriter) {
+func (csc *CarStatusController) activate(id uint, w http.ResponseWriter, uuid string) {
 	usecase := usecase.NewActivateCarUserUseCase(csc.DB)
-	response := usecase.ActivateCarUser(id)
+	response := usecase.ActivateCarUser(id, uuid)
 	if !response.Success {
 		http.Error(w, response.Message, http.StatusInternalServerError)
 		return
@@ -72,9 +77,9 @@ func (csc *CarStatusController) activate(id uint, w http.ResponseWriter) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (csc *CarStatusController) desactivate(id uint, w http.ResponseWriter) {
+func (csc *CarStatusController) desactivate(id uint, w http.ResponseWriter, uuid string) {
 	usecase := usecase.NewDesactivateCarUserUseCase(csc.DB)
-	response := usecase.DesactivateCarUser(id)
+	response := usecase.DesactivateCarUser(id, uuid)
 	if !response.Success {
 		http.Error(w, response.Message, http.StatusInternalServerError)
 		return
