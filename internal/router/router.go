@@ -23,12 +23,13 @@ func Router(db *gorm.DB, cfg *security.Environment, sugar *zap.SugaredLogger) {
 	collectorController := collectorcontroller.NewCollectorController(db)
 	collectorStatsController := collectorcontroller.NewCollectorStatsController(db)
 	contentController := contentcontroller.NewMessageController(db)
+	carStatusController := carcontroller.NewCarStatusController(db)
 	http.Handle(prefix+"/information/me", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(accountController.Controller()))))
 	http.Handle(prefix+"/data-collector/car", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carController.Controller()))))
 	http.Handle(prefix+"/data-collector/car/user", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carUserController.Controller()))))
 	http.Handle(prefix+"/data-collector", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(collectorController.Controller()))))
 	http.Handle(prefix+"/data-collector/stats/", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(collectorStatsController.Controller()))))
 	http.Handle(prefix+"/data-collector/car/user/", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carUserController.Controller()))))
+	http.Handle(prefix+"/data-collector/car/user/status/", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(carStatusController.Controller()))))
 	http.Handle(prefix+"/content/message", corsMiddleware.Config(tokenMiddleware.ValidateTokenMiddleware(http.HandlerFunc(contentController.Controller()))))
-
 }

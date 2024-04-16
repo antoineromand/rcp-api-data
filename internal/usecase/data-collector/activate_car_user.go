@@ -21,7 +21,7 @@ func NewActivateCarUserUseCase(db *gorm.DB) *ActivateCarUserUseCase {
 	}
 }
 
-func (d *DesactivateCarUserUseCase) ActivateCarUser(id uint) DCUResponse {
+func (d *ActivateCarUserUseCase) ActivateCarUser(id uint) DCUResponse {
 	repository := repository.NewCarUserRepository(d.DB)
 	car_user, err := repository.GetCarUserByID(id)
 	if err != nil {
@@ -47,6 +47,6 @@ func (d *DesactivateCarUserUseCase) ActivateCarUser(id uint) DCUResponse {
 
 	return DCUResponse{
 		Success: true,
-		Message: "Car user desactivated successfully",
+		Message: "Car user activated successfully",
 	}
 }
