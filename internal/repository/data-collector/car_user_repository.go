@@ -115,6 +115,7 @@ func (cur *CarUserRepository) GetCarsWithBacCountByUserUUID(userUUID uuid.UUID) 
 		Joins("LEFT JOIN centrale_module ON car_user.id = centrale_module.car_user_id").
 		Joins("LEFT JOIN bac ON centrale_module.id = bac.centrale_module_id").
 		Where("car_user.user_uuid = ?", userUUID).
+		Where("car_user.active = ?", true).
 		Select("car_user.id AS id, brand.name AS brand, car.year, car.fuel_type, car.car_model AS model, COUNT(bac.id) AS bac_count").
 		Group("car_user.id, brand.name, car.year, car.fuel_type, car.car_model").
 		Find(&cars)

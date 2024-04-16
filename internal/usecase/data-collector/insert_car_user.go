@@ -38,6 +38,7 @@ func (e *InsertCarUser) InsertCarUser(uuid string, bytes []byte) ICResponse {
 		&data.Car_User{
 			User_uuid: dto.UserUUID,
 			CarID:     dto.CarID,
+			Active:    true,
 		},
 	)
 	if err != nil {
