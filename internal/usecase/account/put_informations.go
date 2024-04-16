@@ -62,7 +62,7 @@ func (u *PutInformationsUsecase) PutInformations(_uuid string, account []byte) *
 		}
 	}
 	if accountEntity.Username != nil || accountEntity.Email != nil || accountMappingResult.Password != nil {
-		redPanda := config.NewKafkaService(utils.ConvertEnvStringToArray(u.cfg.RP_BROKERS), "updateCredentials")
+		redPanda := config.NewKafkaService(utils.ConvertEnvStringToArray(u.cfg.RP_BROKERS), "update-credential")
 		var userCredentials = dto.NewUserCredentialsDTO(accountEntity.Username, accountMappingResult.Password, accountEntity.Email)
 		redPanda.SendMessage(accountEntity.UserUUID.String(), userCredentials)
 	}
